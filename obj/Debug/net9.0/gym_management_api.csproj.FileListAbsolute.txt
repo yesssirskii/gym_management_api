@@ -268,3 +268,12 @@
 /Users/ivanmatejcic/Local projects/gym_management/gym_management_api/obj/Debug/net9.0/gym_management_api.pdb
 /Users/ivanmatejcic/Local projects/gym_management/gym_management_api/obj/Debug/net9.0/gym_management_api.genruntimeconfig.cache
 /Users/ivanmatejcic/Local projects/gym_management/gym_management_api/obj/Debug/net9.0/ref/gym_management_api.dll
+/Users/ivanmatejcic/Local projects/gym_management/gym_management_api/bin/Debug/net9.0/Microsoft.AspNetCore.Authentication.JwtBearer.dll
+/Users/ivanmatejcic/Local projects/gym_management/gym_management_api/bin/Debug/net9.0/Microsoft.Identity.Abstractions.dll
+/Users/ivanmatejcic/Local projects/gym_management/gym_management_api/bin/Debug/net9.0/Microsoft.IdentityModel.Abstractions.dll
+/Users/ivanmatejcic/Local projects/gym_management/gym_management_api/bin/Debug/net9.0/Microsoft.IdentityModel.JsonWebTokens.dll
+/Users/ivanmatejcic/Local projects/gym_management/gym_management_api/bin/Debug/net9.0/Microsoft.IdentityModel.Logging.dll
+/Users/ivanmatejcic/Local projects/gym_management/gym_management_api/bin/Debug/net9.0/Microsoft.IdentityModel.Protocols.dll
+/Users/ivanmatejcic/Local projects/gym_management/gym_management_api/bin/Debug/net9.0/Microsoft.IdentityModel.Protocols.OpenIdConnect.dll
+/Users/ivanmatejcic/Local projects/gym_management/gym_management_api/bin/Debug/net9.0/Microsoft.IdentityModel.Tokens.dll
+/Users/ivanmatejcic/Local projects/gym_management/gym_management_api/bin/Debug/net9.0/System.IdentityModel.Tokens.Jwt.dll

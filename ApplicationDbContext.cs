@@ -1,3 +1,4 @@
+using gym_management_api.DTO;
 using gym_management_api.Models;
 using Microsoft.EntityFrameworkCore;
 
@@ -14,6 +15,9 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
     public DbSet<WorkoutSession> WorkoutSessions { get; set; }
     public DbSet<Notification> Notifications { get; set; }
     public DbSet<Equipment> Equipment { get; set; }
+    
+    public DbSet<RefreshToken> RefreshTokens { get; set; }
+    public DbSet<PasswordResetToken> PasswordResetTokens { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -112,6 +116,43 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
         {
             entity.HasIndex(e => e.Name);
             entity.HasIndex(e => e.Status);
+        });
+        
+        modelBuilder.Entity<RefreshToken>(entity =>
+        {
+            entity.HasKey(rt => rt.Id);
+            
+            entity.Property(rt => rt.Token)
+                .IsRequired()
+                .HasMaxLength(255);
+
+            entity.HasIndex(rt => rt.Token).IsUnique();
+            entity.HasIndex(rt => new { rt.UserId, rt.IsRevoked });
+            entity.HasIndex(rt => rt.ExpiresAt);
+
+            entity.HasOne(rt => rt.User)
+                .WithMany()
+                .HasForeignKey(rt => rt.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
+        });
+
+        // Configure PasswordResetToken
+        modelBuilder.Entity<PasswordResetToken>(entity =>
+        {
+            entity.HasKey(prt => prt.Id);
+            
+            entity.Property(prt => prt.Token)
+                .IsRequired()
+                .HasMaxLength(255);
+
+            entity.HasIndex(prt => prt.Token).IsUnique();
+            entity.HasIndex(prt => new { prt.UserId, prt.IsUsed });
+            entity.HasIndex(prt => prt.ExpiresAt);
+
+            entity.HasOne(prt => prt.User)
+                .WithMany()
+                .HasForeignKey(prt => prt.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
         });
     }
 }
