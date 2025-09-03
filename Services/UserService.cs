@@ -15,10 +15,132 @@ public class UserService(ApplicationDbContext dbContext, SubscriptionService sub
             Id = u.Id,
             FirstName = u.FirstName,
             LastName = u.LastName,
+            CreatedAt = u.CreatedAt,
+            IsActive = u.IsActive,
             Oib = u.Oib,
             SubscriptionType = u.SubscriptionType,
             UserType = u.GetType().Name
-        }).ToListAsync();
+        })
+        .ToListAsync();
+    }
+
+    public async Task<GetUserByIdDto?> GetUserById(int id)
+    {
+        var user = await dbContext.Users.FindAsync(id);
+        
+        if (user == null)
+            return null;
+
+        return user switch
+        {
+            Member member => new GetMemberByIdDto
+            {
+                Id = member.Id,
+                Oib = member.Oib,
+                Username = member.Username,
+                Email = member.Email,
+                FirstName = member.FirstName,
+                LastName = member.LastName,
+                PhoneNumber = member.PhoneNumber,
+                DateOfBirth = member.DateOfBirth,
+                Gender = member.Gender,
+                Address = member.Address,
+                CreatedAt = member.CreatedAt,
+                UpdatedAt = member.UpdatedAt,
+                IsActive = member.IsActive,
+                ProfileImageUrl = member.ProfileImageUrl,
+                LastLoginAt = member.LastLoginAt,
+                SubscriptionType = member.SubscriptionType,
+                UserType = nameof(Member),
+                // Member-specific properties
+                MembershipNumber = member.MembershipNumber,
+                JoinDate = member.JoinDate,
+                EmergencyContactName = member.EmergencyContactName,
+                EmergencyContactPhone = member.EmergencyContactPhone,
+                MedicalNotes = member.MedicalNotes,
+                FitnessGoals = member.FitnessGoals,
+                Height = member.Height,
+                Weight = member.Weight
+            },
+            
+            Trainer trainer => new GetTrainerByIdDto
+            {
+                Id = trainer.Id,
+                Oib = trainer.Oib,
+                Username = trainer.Username,
+                Email = trainer.Email,
+                FirstName = trainer.FirstName,
+                LastName = trainer.LastName,
+                PhoneNumber = trainer.PhoneNumber,
+                DateOfBirth = trainer.DateOfBirth,
+                Gender = trainer.Gender,
+                Address = trainer.Address,
+                CreatedAt = trainer.CreatedAt,
+                UpdatedAt = trainer.UpdatedAt,
+                IsActive = trainer.IsActive,
+                ProfileImageUrl = trainer.ProfileImageUrl,
+                LastLoginAt = trainer.LastLoginAt,
+                SubscriptionType = trainer.SubscriptionType,
+                UserType = nameof(Trainer),
+                
+                Specialization = trainer.Specialization,
+                Certifications = trainer.Certifications,
+                YearsOfExperience = trainer.YearsOfExperience,
+                HourlyRate = trainer.HourlyRate,
+                Rating = trainer.Rating,
+                Bio = trainer.Bio,
+                IsAvailable = trainer.IsAvailable,
+                PersonnelId = trainer.PersonnelId
+            },
+            
+            Personnel personnel => new GetPersonnelByIdDto
+            {
+                Id = personnel.Id,
+                Oib = personnel.Oib,
+                Username = personnel.Username,
+                Email = personnel.Email,
+                FirstName = personnel.FirstName,
+                LastName = personnel.LastName,
+                PhoneNumber = personnel.PhoneNumber,
+                DateOfBirth = personnel.DateOfBirth,
+                Gender = personnel.Gender,
+                Address = personnel.Address,
+                CreatedAt = personnel.CreatedAt,
+                UpdatedAt = personnel.UpdatedAt,
+                IsActive = personnel.IsActive,
+                ProfileImageUrl = personnel.ProfileImageUrl,
+                LastLoginAt = personnel.LastLoginAt,
+                SubscriptionType = personnel.SubscriptionType,
+                UserType = nameof(Personnel),
+                
+                Role = personnel.Role,
+                Salary = personnel.Salary,
+                HireDate = personnel.HireDate,
+                EmployeeId = personnel.EmployeeId,
+                JobDescription = personnel.JobDescription
+            },
+            
+            _ => new GetUserByIdDto
+            {
+                Id = user.Id,
+                Oib = user.Oib,
+                Username = user.Username,
+                Email = user.Email,
+                FirstName = user.FirstName,
+                LastName = user.LastName,
+                PhoneNumber = user.PhoneNumber,
+                DateOfBirth = user.DateOfBirth,
+                Gender = user.Gender,
+                Address = user.Address,
+                CreatedAt = user.CreatedAt,
+                UpdatedAt = user.UpdatedAt,
+                IsActive = user.IsActive,
+                ProfileImageUrl = user.ProfileImageUrl,
+                LastLoginAt = user.LastLoginAt,
+                SubscriptionType = user.SubscriptionType,
+                UserType = user.GetType().Name
+            }
+        };
     }
 
     public async Task<int> CreateUser(CreateUserDto userDto)

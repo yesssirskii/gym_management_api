@@ -9,7 +9,22 @@ namespace gym_management_api.Controllers;
 [Route("api/[controller]")]
 public class SubscriptionController(SubscriptionService subscriptionService) : ControllerBase
 {
-    [HttpGet("get-subscription")]
+    [HttpGet("subscriptions")]
+    public async Task<IActionResult> GetSubscriptions()
+    {
+        try
+        {
+            var subscriptions = await subscriptionService.GetSubscriptionsAsync();
+            
+            return Ok(subscriptions);
+        }
+        catch (Exception)
+        {
+            return StatusCode(500, "$Error while fetching the subscriptions: {ex.Message}");
+        }
+    }
+    
+    [HttpGet("subscription")]
     public async Task<IActionResult> GetSubscriptionByUserId(int userId)
     {
         try

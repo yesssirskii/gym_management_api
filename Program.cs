@@ -52,6 +52,17 @@ builder.Services.AddAuthentication(options =>
 
 builder.Services.AddAuthorization(AuthorizationPolicyProvider.ConfigurePolicies);
 
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy(name:"FrontEndUI", policy =>
+    {
+        policy.WithOrigins("http://localhost:4200")
+            .AllowAnyMethod()
+            .AllowAnyHeader()
+            .AllowAnyOrigin();
+    });
+});
+
 var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
@@ -66,10 +77,9 @@ if (app.Environment.IsDevelopment())
     });
 }
 
+app.UseCors("FrontEndUI");
 app.UseAuthentication();
 app.UseAuthorization();
-
 app.UseHttpsRedirection();
 app.MapControllers();
-
 app.Run();

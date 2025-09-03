@@ -12,7 +12,7 @@ public class JwtService(IConfiguration configuration) : IJwtService
     public string GenerateAccessToken(User user)
     {
         var tokenHandler = new JwtSecurityTokenHandler();
-        var key = Encoding.ASCII.GetBytes(configuration["Jwt:SecretKey"]);
+        var key = Encoding.UTF8.GetBytes(configuration["Jwt:SecretKey"]);
             
         var claims = new List<Claim>
         {
@@ -39,6 +39,7 @@ public class JwtService(IConfiguration configuration) : IJwtService
         };
 
         var token = tokenHandler.CreateToken(tokenDescriptor);
+        
         return tokenHandler.WriteToken(token);
     }
 

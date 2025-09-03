@@ -10,6 +10,20 @@ namespace gym_management_api.Controllers;
 [Route("api/[controller]")]
 public class UserController(UserService userService) : ControllerBase
 {
+    [HttpGet("{userId}")]
+    public async Task<ActionResult<List<GetUsersDto>>> GetUserById(int userId)
+    {
+        try 
+        {
+            var user = await userService.GetUserById(userId);
+            return Ok(user);
+        }
+        catch (Exception)
+        {
+            return StatusCode(500, "Error while fetching data for the user.");
+        }
+    }
+    
     [HttpGet("user-table-data")]
     public async Task<ActionResult<List<GetUsersDto>>> GetUserDataForTable()
     {

@@ -10,47 +10,55 @@ public class AuthService(ApplicationDbContext context, IJwtService jwtService, I
 {
     public async Task<LoginResponseDto> LoginAsync(LoginDto loginDto, string deviceInfo = null)
     {
-        var user = await context.Users
-            .FirstOrDefaultAsync(u => u.Username == loginDto.Username && u.IsActive);
-
-        if (user == null || !BCrypt.Net.BCrypt.Verify(loginDto.Password, user.PasswordHash))
+        try
         {
-            throw new UnauthorizedAccessException("Invalid username or password");
-        }
-
-        var accessToken = jwtService.GenerateAccessToken(user);
-        var refreshToken = jwtService.GenerateRefreshToken();
-
-        var refreshTokenEntity = new RefreshToken
-        {
-            Token = refreshToken,
-            UserId = user.Id,
-            ExpiresAt = DateTime.UtcNow.AddDays(30),
-            DeviceInfo = deviceInfo
-        };
-
-        context.RefreshTokens.Add(refreshTokenEntity);
-
-        user.LastLoginAt = DateTime.UtcNow;
+            var user = await context.Users
+                .FirstOrDefaultAsync(u => u.Username == loginDto.Username && u.IsActive);
             
-        await context.SaveChangesAsync();
-
-        return new LoginResponseDto
-        {
-            Token = accessToken,
-            RefreshToken = refreshToken,
-            ExpiresAt = jwtService.GetTokenExpiration(),
-            User = new UserInfoDto
+            if (user == null || !BCrypt.Net.BCrypt.Verify(loginDto.Password, user.PasswordHash))
             {
-                Id = user.Id,
-                Username = user.Username,
-                Email = user.Email,
-                FirstName = user.FirstName,
-                LastName = user.LastName,
-                UserType = user.GetType().Name,
-                Role = user is Personnel personnel ? personnel.Role.ToString() : null
+                throw new UnauthorizedAccessException("Invalid username or password");
             }
-        };
+
+            var accessToken = jwtService.GenerateAccessToken(user);
+            var refreshToken = jwtService.GenerateRefreshToken();
+
+            var refreshTokenEntity = new RefreshToken
+            {
+                Token = refreshToken,
+                UserId = user.Id,
+                ExpiresAt = DateTime.UtcNow.AddDays(30),
+                DeviceInfo = deviceInfo
+            };
+
+            context.RefreshTokens.Add(refreshTokenEntity);
+
+            user.LastLoginAt = DateTime.UtcNow;
+            
+            await context.SaveChangesAsync();
+
+            return new LoginResponseDto
+            {
+                Token = accessToken,
+                RefreshToken = refreshToken,
+                ExpiresAt = jwtService.GetTokenExpiration(),
+                User = new UserInfoDto
+                {
+                    Id = user.Id,
+                    Username = user.Username,
+                    Email = user.Email,
+                    FirstName = user.FirstName,
+                    LastName = user.LastName,
+                    UserType = user.GetType().Name,
+                    Role = user is Personnel personnel ? personnel.Role.ToString() : null
+                }
+            };
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"DB error: {ex.Message}");
+            throw;
+        }
     }
     
     public async Task<LoginResponseDto> RefreshTokenAsync(string refreshToken)

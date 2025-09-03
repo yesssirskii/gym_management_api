@@ -7,6 +7,8 @@ public class GetUsersDto
     public int Id { get; set; }
     public string? FirstName { get; set; }
     public string? LastName { get; set; }
+    public DateTime CreatedAt { get; set; }
+    public bool IsActive { get; set; }
     public long Oib { get; set; }
     public SubscriptionTypeEnum? SubscriptionType { get; set; }
     public string UserType { get; set; }
