@@ -160,7 +160,7 @@ public class TrainersController(TrainerMemberService trainerMemberService) : Con
     {
         var trainer = await trainerMemberService.GetMemberTrainerAsync(memberId);
         if (trainer == null)
-            return NotFound(new { Error = "Member has no active trainer" });
+            return Ok("Member is not assigned to any trainer");
 
         return Ok(trainer);
     }

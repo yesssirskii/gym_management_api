@@ -24,12 +24,12 @@ public class SubscriptionController(SubscriptionService subscriptionService) : C
         }
     }
     
-    [HttpGet("subscription")]
+    [HttpGet("{userId}")]
     public async Task<IActionResult> GetSubscriptionByUserId(int userId)
     {
         try
         {
-            var subscription = await subscriptionService.GetSubscriptionById(userId);
+            var subscription = await subscriptionService.GetSubscriptionByMemberId(userId);
             
             return Ok(subscription);
         }

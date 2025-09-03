@@ -248,10 +248,10 @@ public class TrainerMemberService(ApplicationDbContext dbContext) : ITrainerMemb
         
         public async Task<TrainerMemberDto> GetMemberTrainerAsync(int memberId)
         {
-            return await dbContext.TrainerMembers
+            var memberTrainer = await dbContext.TrainerMembers
                 .Include(tm => tm.Trainer)
                 .Include(tm => tm.Member)
-                .Where(tm => tm.MemberId == memberId && tm.Status == TrainingStatusEnum.Active)
+                .Where(tm => tm.MemberId == memberId)
                 .Select(tm => new TrainerMemberDto
                 {
                     Id = tm.Id,
@@ -274,6 +274,8 @@ public class TrainerMemberService(ApplicationDbContext dbContext) : ITrainerMemb
                     SessionRate = tm.SessionRate
                 })
                 .FirstOrDefaultAsync();
+            
+            return memberTrainer;
         }
         
         public async Task<List<TrainerMemberDto>> GetTrainerMembersAsync(int trainerId)

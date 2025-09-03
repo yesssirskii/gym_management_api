@@ -39,9 +39,13 @@ public class SubscriptionService(ApplicationDbContext dbContext)
         return subscription.Id;
     }
 
-    public async Task<Subscription?> GetSubscriptionById(int id)
+    public async Task<Subscription?> GetSubscriptionByMemberId(int memberId)
     {
-        return await dbContext.Subscriptions.FindAsync(id);
+        var userSubscription = await dbContext.Subscriptions
+            .Where(s => s.MemberId == memberId && s.IsDeleted == false)
+            .FirstOrDefaultAsync();
+        
+        return userSubscription;
     }
 
     public async Task<List<GetSubscriptionsDto>> GetSubscriptionsAsync()
@@ -63,7 +67,7 @@ public class SubscriptionService(ApplicationDbContext dbContext)
 
     public async Task<string> DeleteSubscription(int id)
     {
-        Subscription subscriptionToDelete = await GetSubscriptionById(id);
+        var subscriptionToDelete = await GetSubscriptionByMemberId(id);
 
         subscriptionToDelete.AutoRenewal = false;
         subscriptionToDelete.IsCancelled = true;

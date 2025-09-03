@@ -274,7 +274,7 @@ public class UserService(ApplicationDbContext dbContext, SubscriptionService sub
             // checking if the user has a subscription
             if (user.SubscriptionType != SubscriptionTypeEnum.None)
             {
-                Subscription? subscription = await subscriptionService.GetSubscriptionById(user.Id);
+                Subscription? subscription = await subscriptionService.GetSubscriptionByMemberId(user.Id);
                 
                 subscription.Status = SubscriptionStatusEnum.Cancelled;
                 subscription.IsCancelled = true;
