@@ -10,6 +10,20 @@ namespace gym_management_api.Controllers;
 [Route("api/[controller]")]
 public class UserController(UserService userService) : ControllerBase
 {
+    [HttpGet("user-table-data")]
+    public async Task<ActionResult<List<GetUsersDto>>> GetUserDataForTable()
+    {
+        try 
+        {
+            var users = await userService.GetUserDataForTable();
+            return Ok(users);
+        }
+        catch (Exception)
+        {
+            return StatusCode(500, "An error occurred while fetching users");
+        }
+    }
+    
     [HttpGet("{userId}")]
     public async Task<ActionResult<List<GetUsersDto>>> GetUserById(int userId)
     {
@@ -24,17 +38,48 @@ public class UserController(UserService userService) : ControllerBase
         }
     }
     
-    [HttpGet("user-table-data")]
-    public async Task<ActionResult<List<GetUsersDto>>> GetUserDataForTable()
+    [HttpGet("members")]
+    public async Task<ActionResult<List<GetUsersDto>>> GetAllMembers()
     {
         try 
         {
-            var users = await userService.GetUserDataForTable();
-            return Ok(users);
+            var members = await userService.GetMembers();
+            
+            return Ok(members);
         }
         catch (Exception)
         {
-            return StatusCode(500, "An error occurred while fetching users");
+            return StatusCode(500, "An error occured while fetching members.");
+        }
+    }
+    
+    [HttpGet("trainers")]
+    public async Task<ActionResult<List<GetUsersDto>>> GetAllTrainers()
+    {
+        try 
+        {
+            var trainers = await userService.GetTrainers();
+            
+            return Ok(trainers);
+        }
+        catch (Exception)
+        {
+            return StatusCode(500, "An error occured while fetching trainers.");
+        }
+    }
+    
+    [HttpGet("personnel")]
+    public async Task<ActionResult<List<GetUsersDto>>> GetAllPersonnel()
+    {
+        try 
+        {
+            var personnel = await userService.GetPersonnel();
+            
+            return Ok(personnel);
+        }
+        catch (Exception)
+        {
+            return StatusCode(500, "An error occured while fetching personnel.");
         }
     }
 

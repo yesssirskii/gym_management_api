@@ -286,4 +286,64 @@ public class UserService(ApplicationDbContext dbContext, SubscriptionService sub
         
         await dbContext.SaveChangesAsync();
     }
+
+    public async Task<List<GetUsersDto>> GetMembers()
+    {
+        var members = await dbContext.Users
+            .OfType<Member>()
+            .Select(u => new GetUsersDto
+            {
+                Id = u.Id,
+                FirstName = u.FirstName,
+                LastName = u.LastName,
+                CreatedAt = u.CreatedAt,
+                IsActive = u.IsActive,
+                Oib = u.Oib,
+                SubscriptionType = u.SubscriptionType,
+                UserType = "Member"
+            })
+            .ToListAsync();
+
+        return members;
+    }
+    
+    public async Task<List<GetUsersDto>> GetPersonnel()
+    {
+        var personnel = await dbContext.Users
+            .OfType<Personnel>()
+            .Select(u => new GetUsersDto
+            {
+                Id = u.Id,
+                FirstName = u.FirstName,
+                LastName = u.LastName,
+                CreatedAt = u.CreatedAt,
+                IsActive = u.IsActive,
+                Oib = u.Oib,
+                SubscriptionType = u.SubscriptionType,
+                UserType = "Personnel"
+            })
+            .ToListAsync();
+
+        return personnel;
+    }
+    
+    public async Task<List<GetUsersDto>> GetTrainers()
+    {
+        var trainers = await dbContext.Users
+            .OfType<Trainer>()
+            .Select(u => new GetUsersDto
+            {
+                Id = u.Id,
+                FirstName = u.FirstName,
+                LastName = u.LastName,
+                CreatedAt = u.CreatedAt,
+                IsActive = u.IsActive,
+                Oib = u.Oib,
+                SubscriptionType = u.SubscriptionType,
+                UserType = "Trainer"
+            })
+            .ToListAsync();
+
+        return trainers;
+    }
 }
