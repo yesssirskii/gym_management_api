@@ -94,7 +94,17 @@ public class UserController(UserService userService) : ControllerBase
         }
         catch (Exception ex)
         {
-            return StatusCode(500, "An error occurred while creating the user.");
+            Console.WriteLine($"Exception: {ex.Message}");
+            Console.WriteLine($"Inner Exception: {ex.InnerException?.Message}");
+            Console.WriteLine($"Stack Trace: {ex.StackTrace}");
+        
+            // If it's a DbUpdateException, get more details
+            if (ex is Microsoft.EntityFrameworkCore.DbUpdateException dbEx)
+            {
+                Console.WriteLine($"DB Update Exception: {dbEx.InnerException?.Message}");
+            }
+
+            throw;
         }
     }
     

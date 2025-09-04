@@ -33,7 +33,7 @@ public class CreateUserDto
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
     
     public GenderEnum Gender { get; set; }
-    public string Address { get; set; }
+    public string? Address { get; set; }
     
     public SubscriptionTypeEnum SubscriptionType { get; set; }
     
@@ -41,25 +41,25 @@ public class CreateUserDto
     public UserType UserType { get; set; }
     
     // Member-specific fields
-    public string EmergencyContactName { get; set; }
-    public string EmergencyContactPhone { get; set; }
-    public string MedicalNotes { get; set; }
-    public string FitnessGoals { get; set; }
+    public string? EmergencyContactName { get; set; }
+    public string? EmergencyContactPhone { get; set; }
+    public string? MedicalNotes { get; set; }
+    public string? FitnessGoals { get; set; }
     public decimal? Height { get; set; }
     public decimal? Weight { get; set; }
     
     // Trainer-specific fields
     public TrainerSpecializationEnum Specialization { get; set; }
-    public string Certifications { get; set; }
+    public string? Certifications { get; set; }
     public int? YearsOfExperience { get; set; }
     public decimal? HourlyRate { get; set; }
-    public string Bio { get; set; }
+    public string? Bio { get; set; }
     
     // Personnel-specific fields
     public PersonnelRoleEnum? Role { get; set; }
     public decimal? Salary { get; set; }
-    public string EmployeeId { get; set; }
-    public string JobDescription { get; set; }
+    public string? EmployeeId { get; set; }
+    public string? JobDescription { get; set; }
 }
 
 public enum UserType

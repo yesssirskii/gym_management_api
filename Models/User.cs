@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using gym_management_api.Enums;
 
 namespace gym_management_api.Models;
@@ -19,6 +20,7 @@ public abstract class User
     public required string Email { get; set; }
     
     [Required]
+    [Column(TypeName = "varchar(60)")]
     public required string PasswordHash { get; set; }
     
     [Required]

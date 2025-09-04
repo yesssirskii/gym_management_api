@@ -35,7 +35,7 @@ public class TrainersController(TrainerMemberService trainerMemberService) : Con
         }
     }
     
-    [HttpGet("trainers/{id}")]
+    [HttpGet("{id}")]
     public async Task<ActionResult<List<GetTrainersDto>>> GetTrainerById(int id)
     {
         if (!ModelState.IsValid)

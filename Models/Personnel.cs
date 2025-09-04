@@ -15,7 +15,7 @@ public class Personnel : User
     public DateTime HireDate { get; set; } = DateTime.UtcNow;
         
     [StringLength(20)]
-    public string EmployeeId { get; set; }
+    public string? EmployeeId { get; set; }
         
     [StringLength(500)]
     public string? JobDescription { get; set; }

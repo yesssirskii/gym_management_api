@@ -142,6 +142,69 @@ public class UserService(ApplicationDbContext dbContext, SubscriptionService sub
             }
         };
     }
+    
+    public async Task<List<GetUsersDto>> GetMembers()
+    {
+        var members = await dbContext.Users
+            .OfType<Member>()
+            .Where(u => u.IsDeleted == false)
+            .Select(u => new GetUsersDto
+            {
+                Id = u.Id,
+                FirstName = u.FirstName,
+                LastName = u.LastName,
+                CreatedAt = u.CreatedAt,
+                IsActive = u.IsActive,
+                Oib = u.Oib,
+                SubscriptionType = u.SubscriptionType,
+                UserType = "Member"
+            })
+            .ToListAsync();
+
+        return members;
+    }
+    
+    public async Task<List<GetUsersDto>> GetPersonnel()
+    {
+        var personnel = await dbContext.Users
+            .OfType<Personnel>()
+            .Where(u => u.IsDeleted == false)
+            .Select(u => new GetUsersDto
+            {
+                Id = u.Id,
+                FirstName = u.FirstName,
+                LastName = u.LastName,
+                CreatedAt = u.CreatedAt,
+                IsActive = u.IsActive,
+                Oib = u.Oib,
+                SubscriptionType = u.SubscriptionType,
+                UserType = "Personnel"
+            })
+            .ToListAsync();
+
+        return personnel;
+    }
+    
+    public async Task<List<GetUsersDto>> GetTrainers()
+    {
+        var trainers = await dbContext.Users
+            .OfType<Trainer>()
+            .Where(u => u.IsDeleted == false)
+            .Select(u => new GetUsersDto
+            {
+                Id = u.Id,
+                FirstName = u.FirstName,
+                LastName = u.LastName,
+                CreatedAt = u.CreatedAt,
+                IsActive = u.IsActive,
+                Oib = u.Oib,
+                SubscriptionType = u.SubscriptionType,
+                UserType = "Trainer"
+            })
+            .ToListAsync();
+
+        return trainers;
+    }
 
     public async Task<int> CreateUser(CreateUserDto userDto)
     {
@@ -150,6 +213,8 @@ public class UserService(ApplicationDbContext dbContext, SubscriptionService sub
     
         if (await dbContext.Users.AnyAsync(u => u.Email == userDto.Email))
             throw new ArgumentException("Email already exists");
+        
+        DateTime dateOfBirth = DateTime.SpecifyKind(userDto.DateOfBirth, DateTimeKind.Utc);
 
         User user = userDto.UserType switch
         {
@@ -161,9 +226,9 @@ public class UserService(ApplicationDbContext dbContext, SubscriptionService sub
                 FirstName = userDto.FirstName,
                 LastName = userDto.LastName,
                 PhoneNumber = userDto.PhoneNumber,
-                DateOfBirth = userDto.DateOfBirth,
+                DateOfBirth = dateOfBirth,
                 Gender = userDto.Gender,
-                Address = userDto.Address,
+                Address = userDto.Address ?? "",
                 SubscriptionType = userDto.SubscriptionType,
                 MembershipNumber = $"MEM{DateTime.UtcNow:yyyyMMdd}{new Random().Next(1000, 9999)}",
                 EmergencyContactName = userDto.EmergencyContactName,
@@ -182,15 +247,15 @@ public class UserService(ApplicationDbContext dbContext, SubscriptionService sub
                 FirstName = userDto.FirstName,
                 LastName = userDto.LastName,
                 PhoneNumber = userDto.PhoneNumber,
-                DateOfBirth = userDto.DateOfBirth,
+                DateOfBirth = dateOfBirth,
                 Gender = userDto.Gender,
-                Address = userDto.Address,
+                Address = userDto.Address ?? "",
                 SubscriptionType = userDto.SubscriptionType,
                 Specialization = userDto.Specialization,
-                Certifications = userDto.Certifications,
+                Certifications = userDto.Certifications ?? "",
                 YearsOfExperience = userDto.YearsOfExperience ?? 0,
                 HourlyRate = userDto.HourlyRate ?? 0,
-                Bio = userDto.Bio
+                Bio = userDto.Bio ?? "",
             },
 
             UserType.Personnel => new Personnel
@@ -201,9 +266,9 @@ public class UserService(ApplicationDbContext dbContext, SubscriptionService sub
                 FirstName = userDto.FirstName,
                 LastName = userDto.LastName,
                 PhoneNumber = userDto.PhoneNumber,
-                DateOfBirth = userDto.DateOfBirth,
+                DateOfBirth = dateOfBirth,
                 Gender = userDto.Gender,
-                Address = userDto.Address,
+                Address = userDto.Address ?? "",
                 SubscriptionType = userDto.SubscriptionType,
                 Role = userDto.Role ?? PersonnelRoleEnum.Receptionist,
                 Salary = userDto.Salary ?? 0,
@@ -216,7 +281,7 @@ public class UserService(ApplicationDbContext dbContext, SubscriptionService sub
         dbContext.Users.Add(user);
         await dbContext.SaveChangesAsync();
         
-        if (userDto.SubscriptionType != SubscriptionTypeEnum.None)
+        if (userDto.SubscriptionType != 0)
         {
             var subscription = new CreateSubscriptionDto()
             {
@@ -272,7 +337,7 @@ public class UserService(ApplicationDbContext dbContext, SubscriptionService sub
             user.DeletedAt = DateTime.UtcNow;
 
             // checking if the user has a subscription
-            if (user.SubscriptionType != SubscriptionTypeEnum.None)
+            if (user.SubscriptionType != 0)
             {
                 Subscription? subscription = await subscriptionService.GetSubscriptionByMemberId(user.Id);
                 
@@ -285,65 +350,5 @@ public class UserService(ApplicationDbContext dbContext, SubscriptionService sub
         }
         
         await dbContext.SaveChangesAsync();
-    }
-
-    public async Task<List<GetUsersDto>> GetMembers()
-    {
-        var members = await dbContext.Users
-            .OfType<Member>()
-            .Select(u => new GetUsersDto
-            {
-                Id = u.Id,
-                FirstName = u.FirstName,
-                LastName = u.LastName,
-                CreatedAt = u.CreatedAt,
-                IsActive = u.IsActive,
-                Oib = u.Oib,
-                SubscriptionType = u.SubscriptionType,
-                UserType = "Member"
-            })
-            .ToListAsync();
-
-        return members;
-    }
-    
-    public async Task<List<GetUsersDto>> GetPersonnel()
-    {
-        var personnel = await dbContext.Users
-            .OfType<Personnel>()
-            .Select(u => new GetUsersDto
-            {
-                Id = u.Id,
-                FirstName = u.FirstName,
-                LastName = u.LastName,
-                CreatedAt = u.CreatedAt,
-                IsActive = u.IsActive,
-                Oib = u.Oib,
-                SubscriptionType = u.SubscriptionType,
-                UserType = "Personnel"
-            })
-            .ToListAsync();
-
-        return personnel;
-    }
-    
-    public async Task<List<GetUsersDto>> GetTrainers()
-    {
-        var trainers = await dbContext.Users
-            .OfType<Trainer>()
-            .Select(u => new GetUsersDto
-            {
-                Id = u.Id,
-                FirstName = u.FirstName,
-                LastName = u.LastName,
-                CreatedAt = u.CreatedAt,
-                IsActive = u.IsActive,
-                Oib = u.Oib,
-                SubscriptionType = u.SubscriptionType,
-                UserType = "Trainer"
-            })
-            .ToListAsync();
-
-        return trainers;
     }
 }

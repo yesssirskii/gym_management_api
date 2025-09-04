@@ -378,7 +378,7 @@ namespace gym_management_api.Migrations
 
                     b.Property<string>("PasswordHash")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("varchar(60)");
 
                     b.Property<string>("PhoneNumber")
                         .IsRequired()
@@ -520,7 +520,6 @@ namespace gym_management_api.Migrations
                     b.HasBaseType("gym_management_api.Models.User");
 
                     b.Property<string>("EmployeeId")
-                        .IsRequired()
                         .HasMaxLength(20)
                         .HasColumnType("character varying(20)");
 
