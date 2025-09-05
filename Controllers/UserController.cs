@@ -109,14 +109,21 @@ public class UserController(UserService userService) : ControllerBase
     }
     
     [HttpPut("{id}")]
-    public async Task<ActionResult> UpdateUser(int id, [FromForm] UpdateUserDto dto)
+    public async Task<ActionResult<int>> UpdateUser(int id, [FromForm] UpdateUserDto dto)
     {
-        var success = await userService.UpdateUserAsync(id, dto);
-        
-        if (!success)
-            return NotFound("User not found.");
-    
-        return Ok("User updated successfully!");
+        try
+        {
+            var updateUser = await userService.UpdateUserAsync(id, dto);
+
+            if (updateUser == null || updateUser == 0)
+                return NotFound("User not found.");
+
+            return Ok(updateUser);
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, new { Error = ex.Message });
+        }
     }
     
     [HttpDelete("{id}")]

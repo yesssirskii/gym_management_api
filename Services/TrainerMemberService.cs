@@ -16,7 +16,6 @@ public class TrainerMemberService(ApplicationDbContext dbContext) : ITrainerMemb
     {
         return await dbContext.Trainers
             .Include(t => t.TrainerMembers.Where(tm => tm.Status == TrainingStatusEnum.Active))
-            .Where(t => t.IsActive)
             .Select(t => new GetTrainersDto()
             {
                 Id = t.Id,
@@ -58,10 +57,12 @@ public class TrainerMemberService(ApplicationDbContext dbContext) : ITrainerMemb
                     FirstName = trainer.FirstName,
                     LastName = trainer.LastName,
                     Email = trainer.Email,
+                    Oib = trainer.Oib,
                     PhoneNumber = trainer.PhoneNumber,
                     Gender = trainer.Gender,
                     Address = trainer.Address,
                     DateOfBirth = trainer.DateOfBirth,
+                    
                     Specialization = trainer.Specialization,
                     Certifications = trainer.Certifications,
                     YearsOfExperience = trainer.YearsOfExperience,

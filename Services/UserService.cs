@@ -305,24 +305,106 @@ public class UserService(ApplicationDbContext dbContext, SubscriptionService sub
         return user.Id;
     }
     
-    public async Task<bool> UpdateUserAsync(int id, UpdateUserDto dto)
+    public async Task<int> UpdateUserAsync(int id, UpdateUserDto dto)
     {
         var user = await dbContext.Users.FindAsync(id);
-        if (user == null) return false;
+        if (user == null)
+            throw new ArgumentException("User not found");
 
-        user.FirstName = dto.FirstName ?? user.FirstName;
-        user.LastName = dto.LastName ?? user.LastName;
-        user.PhoneNumber = dto.PhoneNumber ?? user.PhoneNumber;
-        user.Gender = dto.Gender;
-        user.Address = dto.Address ?? user.Address;
-        user.Email = dto.Email ?? user.Email;
-        user.Oib = dto.Oib;
-        user.IsActive = dto.IsActive;
-        user.UpdatedAt = DateTime.UtcNow;
+        // Validate email uniqueness if email is being updated
+        if (!string.IsNullOrEmpty(dto.Email) && dto.Email != user.Email)
+        {
+            if (await dbContext.Users.AnyAsync(u => u.Email == dto.Email))
+                throw new ArgumentException("Email already exists");
+        }
+
+        DateTime dateOfBirth = DateTime.SpecifyKind(dto.DateOfBirth, DateTimeKind.Utc);
+
+        // Handle type-specific updates
+        switch (user)
+        {
+            case Member member:
+                user.FirstName = dto.FirstName;
+                user.LastName = dto.LastName;
+                user.Username = dto.Username;
+                user.PhoneNumber = dto.PhoneNumber;
+                user.Gender = dto.Gender;
+                user.Address = dto.Address ?? "";
+                user.Email = dto.Email;
+                user.Oib = dto.Oib;
+                user.IsActive = dto.IsActive;
+                user.UpdatedAt = DateTime.UtcNow;
+                user.DateOfBirth = dateOfBirth;
+                user.SubscriptionType = dto.SubscriptionType;
+                
+                if (!string.IsNullOrEmpty(dto.EmergencyContactName))
+                    member.EmergencyContactName = dto.EmergencyContactName;
+                if (!string.IsNullOrEmpty(dto.EmergencyContactPhone))
+                    member.EmergencyContactPhone = dto.EmergencyContactPhone;
+                if (dto.MedicalNotes != null)
+                    member.MedicalNotes = dto.MedicalNotes;
+                if (dto.FitnessGoals != null)
+                    member.FitnessGoals = dto.FitnessGoals;
+                if (dto.Height.HasValue)
+                    member.Height = dto.Height.Value;
+                if (dto.Weight.HasValue)
+                    member.Weight = dto.Weight.Value;
+                break;
+
+            case Trainer trainer:
+                user.FirstName = dto.FirstName;
+                user.LastName = dto.LastName;
+                user.Username = dto.Username;
+                user.PhoneNumber = dto.PhoneNumber;
+                user.Gender = dto.Gender;
+                user.Address = dto.Address ?? "";
+                user.Email = dto.Email;
+                user.Oib = dto.Oib;
+                user.IsActive = dto.IsActive;
+                user.UpdatedAt = DateTime.UtcNow;
+                user.DateOfBirth = dateOfBirth;
+                
+                user.SubscriptionType = dto.SubscriptionType;
+                if (dto.Specialization != null)
+                    trainer.Specialization = dto.Specialization;
+                if (dto.Certifications != null)
+                    trainer.Certifications = dto.Certifications;
+                if (dto.YearsOfExperience.HasValue)
+                    trainer.YearsOfExperience = dto.YearsOfExperience.Value;
+                if (dto.HourlyRate.HasValue)
+                    trainer.HourlyRate = dto.HourlyRate.Value;
+                if (dto.Bio != null)
+                    trainer.Bio = dto.Bio;
+                break;
+
+            case Personnel personnel:
+                user.FirstName = dto.FirstName;
+                user.LastName = dto.LastName;
+                user.Username = dto.Username;
+                user.PhoneNumber = dto.PhoneNumber;
+                user.Gender = dto.Gender;
+                user.Address = dto.Address ?? "";
+                user.Email = dto.Email;
+                user.Oib = dto.Oib;
+                user.IsActive = dto.IsActive;
+                user.UpdatedAt = DateTime.UtcNow;
+                user.DateOfBirth = dateOfBirth;
+                user.SubscriptionType = dto.SubscriptionType;
+                
+                if (dto.Role.HasValue)
+                    personnel.Role = dto.Role.Value;
+                if (dto.Salary.HasValue)
+                    personnel.Salary = dto.Salary.Value;
+                if (dto.JobDescription != null)
+                    personnel.JobDescription = dto.JobDescription;
+                break;
+
+            default:
+                throw new ArgumentException("Invalid user type");
+        }
 
         await dbContext.SaveChangesAsync();
-        
-        return true;
+        return user.Id;
     }
     
     public async Task DeleteUser(int id)
