@@ -19,10 +19,10 @@ public class TrainerMember
         
     public TrainingStatusEnum Status { get; set; } = TrainingStatusEnum.Active;
         
-    [StringLength(500)]
+    [StringLength(1000)]
     public string? TrainingGoals { get; set; }
         
-    [StringLength(500)]
+    [StringLength(1000)]
     public string? Notes { get; set; }
         
     public required int SessionsPerWeek { get; set; }

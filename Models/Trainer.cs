@@ -9,7 +9,7 @@ public class Trainer : User
     [StringLength(100)]
     public TrainerSpecializationEnum Specialization { get; set; }
         
-    [StringLength(500)]
+    [StringLength(1000)]
     public string Certifications { get; set; }
         
     public int YearsOfExperience { get; set; }

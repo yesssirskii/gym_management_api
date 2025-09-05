@@ -16,10 +16,10 @@ public class Member : User
     [StringLength(15)]
     public string? EmergencyContactPhone { get; set; }
         
-    [StringLength(500)]
+    [StringLength(1000)]
     public string? MedicalNotes { get; set; }
         
-    [StringLength(500)]
+    [StringLength(1000)]
     public string? FitnessGoals { get; set; }
         
     [Column(TypeName = "decimal(5,2)")]

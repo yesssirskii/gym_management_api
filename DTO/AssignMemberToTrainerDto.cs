@@ -10,10 +10,10 @@ public class AssignMemberToTrainerDto
     [Required]
     public int MemberId { get; set; }
         
-    [StringLength(500)]
+    [StringLength(1000)]
     public string TrainingGoals { get; set; }
         
-    [StringLength(500)]
+    [StringLength(1000)]
     public string Notes { get; set; }
         
     [Range(1, 7)]

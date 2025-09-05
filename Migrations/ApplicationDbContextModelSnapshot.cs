@@ -291,8 +291,8 @@ namespace gym_management_api.Migrations
                         .HasColumnType("integer");
 
                     b.Property<string>("Notes")
-                        .HasMaxLength(500)
-                        .HasColumnType("character varying(500)");
+                        .HasMaxLength(1000)
+                        .HasColumnType("character varying(1000)");
 
                     b.Property<decimal>("SessionRate")
                         .HasColumnType("decimal(8,2)");
@@ -310,8 +310,8 @@ namespace gym_management_api.Migrations
                         .HasColumnType("integer");
 
                     b.Property<string>("TrainingGoals")
-                        .HasMaxLength(500)
-                        .HasColumnType("character varying(500)");
+                        .HasMaxLength(1000)
+                        .HasColumnType("character varying(1000)");
 
                     b.HasKey("Id");
 
@@ -483,8 +483,8 @@ namespace gym_management_api.Migrations
                         .HasColumnType("character varying(15)");
 
                     b.Property<string>("FitnessGoals")
-                        .HasMaxLength(500)
-                        .HasColumnType("character varying(500)");
+                        .HasMaxLength(1000)
+                        .HasColumnType("character varying(1000)");
 
                     b.Property<decimal?>("Height")
                         .HasColumnType("decimal(5,2)");
@@ -493,8 +493,8 @@ namespace gym_management_api.Migrations
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("MedicalNotes")
-                        .HasMaxLength(500)
-                        .HasColumnType("character varying(500)");
+                        .HasMaxLength(1000)
+                        .HasColumnType("character varying(1000)");
 
                     b.Property<string>("MembershipNumber")
                         .HasMaxLength(50)
@@ -561,8 +561,8 @@ namespace gym_management_api.Migrations
 
                     b.Property<string>("Certifications")
                         .IsRequired()
-                        .HasMaxLength(500)
-                        .HasColumnType("character varying(500)");
+                        .HasMaxLength(1000)
+                        .HasColumnType("character varying(1000)");
 
                     b.Property<decimal>("HourlyRate")
                         .HasColumnType("decimal(8,2)");
