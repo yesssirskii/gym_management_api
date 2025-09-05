@@ -164,21 +164,21 @@ public class UserService(ApplicationDbContext dbContext, SubscriptionService sub
         return members;
     }
     
-    public async Task<List<GetUsersDto>> GetPersonnel()
+    public async Task<List<GetPersonnelDto>> GetPersonnel()
     {
-        var personnel = await dbContext.Users
+        var personnel = await dbContext.Personnel
             .OfType<Personnel>()
             .Where(u => u.IsDeleted == false)
-            .Select(u => new GetUsersDto
+            .Select(u => new GetPersonnelDto
             {
                 Id = u.Id,
+                EmployeeId = u.EmployeeId,
                 FirstName = u.FirstName,
+                Email = u.Email,
+                PhoneNumber = u.PhoneNumber,
                 LastName = u.LastName,
-                CreatedAt = u.CreatedAt,
-                IsActive = u.IsActive,
-                Oib = u.Oib,
-                SubscriptionType = u.SubscriptionType,
-                UserType = "Personnel"
+                Role = u.Role,
+                HireDate = u.HireDate
             })
             .ToListAsync();
 

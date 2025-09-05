@@ -69,7 +69,7 @@ public class UserController(UserService userService) : ControllerBase
     }
     
     [HttpGet("personnel")]
-    public async Task<ActionResult<List<GetUsersDto>>> GetAllPersonnel()
+    public async Task<ActionResult<List<GetPersonnelDto>>> GetAllPersonnel()
     {
         try 
         {
