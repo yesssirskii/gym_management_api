@@ -52,7 +52,7 @@ public class UserService(ApplicationDbContext dbContext, SubscriptionService sub
                 LastLoginAt = member.LastLoginAt,
                 SubscriptionType = member.SubscriptionType,
                 UserType = nameof(Member),
-                // Member-specific properties
+                
                 MembershipNumber = member.MembershipNumber,
                 JoinDate = member.JoinDate,
                 EmergencyContactName = member.EmergencyContactName,
@@ -113,10 +113,10 @@ public class UserService(ApplicationDbContext dbContext, SubscriptionService sub
                 SubscriptionType = personnel.SubscriptionType,
                 UserType = nameof(Personnel),
                 
+                EmployeeId = personnel.EmployeeId,
                 Role = personnel.Role,
                 Salary = personnel.Salary,
                 HireDate = personnel.HireDate,
-                EmployeeId = personnel.EmployeeId,
                 JobDescription = personnel.JobDescription
             },
             
@@ -272,7 +272,6 @@ public class UserService(ApplicationDbContext dbContext, SubscriptionService sub
                 SubscriptionType = userDto.SubscriptionType,
                 Role = userDto.Role ?? PersonnelRoleEnum.Receptionist,
                 Salary = userDto.Salary ?? 0,
-                EmployeeId = userDto.EmployeeId,
                 JobDescription = userDto.JobDescription
             },
             _ => throw new ArgumentException("Invalid user type")

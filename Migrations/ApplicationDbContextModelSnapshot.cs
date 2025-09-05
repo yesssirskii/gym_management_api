@@ -519,9 +519,11 @@ namespace gym_management_api.Migrations
                 {
                     b.HasBaseType("gym_management_api.Models.User");
 
-                    b.Property<string>("EmployeeId")
-                        .HasMaxLength(20)
-                        .HasColumnType("character varying(20)");
+                    b.Property<int>("EmployeeId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("EmployeeId"));
 
                     b.Property<DateTime>("HireDate")
                         .HasColumnType("timestamp with time zone");

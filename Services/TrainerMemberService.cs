@@ -1,3 +1,4 @@
+using System.Runtime.InteropServices.JavaScript;
 using gym_management_api.DTO;
 using gym_management_api.DTO.Create;
 using gym_management_api.DTO.Get;
@@ -38,67 +39,73 @@ public class TrainerMemberService(ApplicationDbContext dbContext) : ITrainerMemb
     
     public async Task<TrainerDetailsDto> GetTrainerByIdAsync(int id)
         {
-            var trainer = await dbContext.Trainers
-                .AsSplitQuery()
-                .Include(t => t.Personnel)
-                .Include(t => t.TrainerMembers)
+            try
+            {
+                var trainer = await dbContext.Trainers
+                    .AsSplitQuery()
+                    .Include(t => t.TrainerMembers)
                     .ThenInclude(tm => tm.Member)
-                        .ThenInclude(m => m.Subscriptions.Where(s => s.Status == SubscriptionStatusEnum.Active))
-                .Include(t => t.TrainerMembers.Where(tm => tm.Status == TrainingStatusEnum.Active))
-                .FirstOrDefaultAsync(t => t.Id == id);
+                    .ThenInclude(m => m.Subscriptions.Where(s => s.Status == SubscriptionStatusEnum.Active))
+                    .Include(t => t.TrainerMembers.Where(tm => tm.Status == TrainingStatusEnum.Active))
+                    .FirstOrDefaultAsync(t => t.Id == id);
 
-            if (trainer == null) return null;
+                if (trainer == null) return null;
 
-            var dto = new TrainerDetailsDto
+                var dto = new TrainerDetailsDto
+                {
+                    Id = trainer.Id,
+                    Username = trainer.Username,
+                    FirstName = trainer.FirstName,
+                    LastName = trainer.LastName,
+                    Email = trainer.Email,
+                    PhoneNumber = trainer.PhoneNumber,
+                    Gender = trainer.Gender,
+                    Address = trainer.Address,
+                    DateOfBirth = trainer.DateOfBirth,
+                    Specialization = trainer.Specialization,
+                    Certifications = trainer.Certifications,
+                    YearsOfExperience = trainer.YearsOfExperience,
+                    HourlyRate = trainer.HourlyRate,
+                    Rating = trainer.Rating,
+                    Bio = trainer.Bio,
+                    ProfileImageUrl = trainer.ProfileImageUrl,
+                    IsAvailable = trainer.IsAvailable,
+                    CreatedAt = trainer.CreatedAt,
+                    LastLoginAt = trainer.LastLoginAt,
+                    ActiveMembersCount = trainer.TrainerMembers.Count(tm => tm.Status == TrainingStatusEnum.Active),
+                };
+
+                // Map assigned members
+                dto.AssignedMembers = trainer.TrainerMembers.Select(tm => new TrainerMemberDto
+                {
+                    Id = tm.Id,
+                    TrainerId = tm.TrainerId,
+                    MemberId = tm.MemberId,
+                    MemberUsername = tm.Member.Username,
+                    MemberFirstName = tm.Member.FirstName,
+                    MemberLastName = tm.Member.LastName,
+                    MemberEmail = tm.Member.Email,
+                    MemberPhone = tm.Member.PhoneNumber,
+                    MembershipNumber = tm.Member.MembershipNumber,
+                    HasActiveSubscription = tm.Member.Subscriptions.Any(s =>
+                        s.Status == SubscriptionStatusEnum.Active && s.EndDate > DateTime.UtcNow),
+                    SubscriptionEndDate = tm.Member.Subscriptions
+                        .FirstOrDefault(s => s.Status == SubscriptionStatusEnum.Active)?.EndDate,
+                    StartDate = tm.StartDate,
+                    EndDate = tm.EndDate,
+                    Status = tm.Status,
+                    TrainingGoals = tm.TrainingGoals,
+                    Notes = tm.Notes,
+                    SessionsPerWeek = tm.SessionsPerWeek,
+                    SessionRate = tm.SessionRate
+                }).ToList();
+
+                return dto;
+            }
+            catch (Exception ex)
             {
-                Id = trainer.Id,
-                Username = trainer.Username,
-                FirstName = trainer.FirstName,
-                LastName = trainer.LastName,
-                Email = trainer.Email,
-                PhoneNumber = trainer.PhoneNumber,
-                Gender = trainer.Gender,
-                Address = trainer.Address,
-                DateOfBirth = trainer.DateOfBirth,
-                Specialization = trainer.Specialization,
-                Certifications = trainer.Certifications,
-                YearsOfExperience = trainer.YearsOfExperience,
-                HourlyRate = trainer.HourlyRate,
-                Rating = trainer.Rating,
-                Bio = trainer.Bio,
-                ProfileImageUrl = trainer.ProfileImageUrl,
-                IsAvailable = trainer.IsAvailable,
-                CreatedAt = trainer.CreatedAt,
-                LastLoginAt = trainer.LastLoginAt,
-                ActiveMembersCount = trainer.TrainerMembers.Count(tm => tm.Status == TrainingStatusEnum.Active),
-                PersonnelRole = trainer.Personnel?.Role,
-                EmployeeId = trainer.Personnel?.EmployeeId
-            };
-
-            // Map assigned members
-            dto.AssignedMembers = trainer.TrainerMembers.Select(tm => new TrainerMemberDto
-            {
-                Id = tm.Id,
-                TrainerId = tm.TrainerId,
-                MemberId = tm.MemberId,
-                MemberUsername = tm.Member.Username,
-                MemberFirstName = tm.Member.FirstName,
-                MemberLastName = tm.Member.LastName,
-                MemberEmail = tm.Member.Email,
-                MemberPhone = tm.Member.PhoneNumber,
-                MembershipNumber = tm.Member.MembershipNumber,
-                HasActiveSubscription = tm.Member.Subscriptions.Any(s => s.Status == SubscriptionStatusEnum.Active && s.EndDate > DateTime.UtcNow),
-                SubscriptionEndDate = tm.Member.Subscriptions.FirstOrDefault(s => s.Status == SubscriptionStatusEnum.Active)?.EndDate,
-                StartDate = tm.StartDate,
-                EndDate = tm.EndDate,
-                Status = tm.Status,
-                TrainingGoals = tm.TrainingGoals,
-                Notes = tm.Notes,
-                SessionsPerWeek = tm.SessionsPerWeek,
-                SessionRate = tm.SessionRate
-            }).ToList();
-
-            return dto;
+                throw new ApplicationException($"Error while fetching trainer details: {ex.Message}") ;
+            }
         }
     
     public async Task<int> CreateTrainerAsync(CreateTrainerDto dto)

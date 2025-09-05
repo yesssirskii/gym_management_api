@@ -1,5 +1,7 @@
 using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 using gym_management_api.Enums;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion.Internal;
 
 namespace gym_management_api.DTO.Create;
 
@@ -58,7 +60,6 @@ public class CreateUserDto
     // Personnel-specific fields
     public PersonnelRoleEnum? Role { get; set; }
     public decimal? Salary { get; set; }
-    public string? EmployeeId { get; set; }
     public string? JobDescription { get; set; }
 }
 
@@ -66,5 +67,7 @@ public enum UserType
 {
     Member = 1,
     Trainer = 2,
-    Personnel = 3
+    Personnel = 3,
+    Owner = 4,
+    Manager = 5
 }

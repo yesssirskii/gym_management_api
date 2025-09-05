@@ -53,6 +53,8 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
             entity.HasIndex(e => e.EmployeeId).IsUnique();
             entity.HasIndex(e => e.Email).IsUnique();
             entity.HasIndex(e => e.Username).IsUnique();
+
+            entity.Property(e => e.EmployeeId).ValueGeneratedOnAdd();
         });
 
         modelBuilder.Entity<Subscription>(entity =>

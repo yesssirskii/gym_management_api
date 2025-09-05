@@ -15,7 +15,7 @@ public class TrainerDetailsDto
     public decimal HourlyRate { get; set; }
     public decimal Rating { get; set; }
     public bool IsAvailable { get; set; }
-    public int ActiveMembersCount { get; set; }
+    public int? ActiveMembersCount { get; set; }
     public DateTime CreatedAt { get; set; }
     public GenderEnum Gender { get; set; }
     public string Address { get; set; }
@@ -25,10 +25,6 @@ public class TrainerDetailsDto
     public string ProfileImageUrl { get; set; }
     public DateTime? LastLoginAt { get; set; }
         
-    // Personnel info if applicable
-    public PersonnelRoleEnum? PersonnelRole { get; set; }
-    public string? EmployeeId { get; set; }
-        
     // Members assigned to this trainer
-    public List<TrainerMemberDto> AssignedMembers { get; set; } = new List<TrainerMemberDto>();
+    public List<TrainerMemberDto>? AssignedMembers { get; set; } = new List<TrainerMemberDto>();
 }
