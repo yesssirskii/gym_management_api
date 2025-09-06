@@ -4,5 +4,5 @@ public enum PaymentMethodEnum
 {
     CreditCard = 1,
     Cash = 2,
-    Multisport = 3
+    MultiSport = 3
 }

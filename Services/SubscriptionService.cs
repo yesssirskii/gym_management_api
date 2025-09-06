@@ -1,5 +1,6 @@
 using gym_management_api.DTO.Create;
 using gym_management_api.DTO.Get;
+using gym_management_api.DTO.Update;
 using gym_management_api.Enums;
 using gym_management_api.Models;
 using Microsoft.EntityFrameworkCore;
@@ -39,13 +40,22 @@ public class SubscriptionService(ApplicationDbContext dbContext)
         return subscription.Id;
     }
 
-    public async Task<Subscription?> GetSubscriptionByMemberId(int memberId)
+    public async Task<GetSubscriptionByIdDto?> GetSubscriptionByMemberId(int memberId)
     {
-        var userSubscription = await dbContext.Subscriptions
+        return await dbContext.Subscriptions
             .Where(s => s.MemberId == memberId && s.IsDeleted == false)
+            .Select(s => new GetSubscriptionByIdDto
+            {
+                Id = s.Id,
+                SubscriptionType = s.Type,
+                Status = s.Status,
+                StartDate = s.StartDate,
+                EndDate = s.EndDate,
+                Price = s.Price,
+                PaymentMethod = s.PaymentMethod,
+                AutoRenewal = s.AutoRenewal
+            })
             .FirstOrDefaultAsync();
-        
-        return userSubscription;
     }
 
     public async Task<List<GetSubscriptionsDto>> GetSubscriptionsAsync()
@@ -65,9 +75,35 @@ public class SubscriptionService(ApplicationDbContext dbContext)
             .ToListAsync();
     }
 
+    public async Task<string> UpdateSubscriptionAsync(int userId, UpdateSubscriptionDto dto)
+    {
+        var subscriptionToUpdate = await dbContext.Subscriptions
+            .FirstOrDefaultAsync(s => s.MemberId == userId);
+        
+        if (subscriptionToUpdate == null)
+        {
+            return "Subscription with id " + dto.Id + " does not exist.";
+        }
+
+        subscriptionToUpdate.Type = dto.SubscriptionType;
+        subscriptionToUpdate.Status = dto.Status;
+        subscriptionToUpdate.PaymentMethod = dto.PaymentMethod;
+        subscriptionToUpdate.AutoRenewal = dto.AutoRenewal;
+        
+        await dbContext.SaveChangesAsync();
+        
+        return "Subscription with id " + dto.Id + " has been successfully updated.";
+    }
+
     public async Task<string> DeleteSubscription(int id)
     {
-        var subscriptionToDelete = await GetSubscriptionByMemberId(id);
+        var subscriptionToDelete =  await dbContext.Subscriptions
+            .FirstOrDefaultAsync(s => s.Id == id);
+        
+        if (subscriptionToDelete == null)
+        {
+            return "Subscription with id " + id + " does not exist.";
+        }
 
         subscriptionToDelete.AutoRenewal = false;
         subscriptionToDelete.IsCancelled = true;

@@ -11,7 +11,7 @@ public interface IUserInterface
     Task<List<GetUsersDto>> GetMembers();
     Task<List<GetPersonnelDto>> GetPersonnel();
     Task<List<GetUsersDto>> GetTrainers();
-    Task<int> CreateUser(CreateUserDto userDto);
+    Task<int> CreateUserAsync(CreateUserDto userDto);
     Task<bool> UpdateUserAsync(CreateUserDto dto);
     Task DeleteUser(int id);
 }

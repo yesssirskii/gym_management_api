@@ -27,10 +27,19 @@ public class UserService(ApplicationDbContext dbContext, SubscriptionService sub
     public async Task<GetUserByIdDto?> GetUserById(int id)
     {
         var user = await dbContext.Users.FindAsync(id);
-        
-        if (user == null)
-            return null;
 
+        if (user == null)
+        {
+            return null;
+        }
+        
+        GetSubscriptionByIdDto? userSubscription = null;
+
+        if (user.GetType().Name == "Member")
+        {
+            userSubscription = await subscriptionService.GetSubscriptionByMemberId(user.Id);
+        }
+        
         return user switch
         {
             Member member => new GetMemberByIdDto
@@ -54,13 +63,15 @@ public class UserService(ApplicationDbContext dbContext, SubscriptionService sub
                 UserType = nameof(Member),
                 
                 MembershipNumber = member.MembershipNumber,
-                JoinDate = member.JoinDate,
+                StartDate = member.JoinDate,
                 EmergencyContactName = member.EmergencyContactName,
                 EmergencyContactPhone = member.EmergencyContactPhone,
                 MedicalNotes = member.MedicalNotes,
                 FitnessGoals = member.FitnessGoals,
                 Height = member.Height,
-                Weight = member.Weight
+                Weight = member.Weight,
+                
+                Subscription = userSubscription
             },
             
             Trainer trainer => new GetTrainerByIdDto
@@ -206,11 +217,11 @@ public class UserService(ApplicationDbContext dbContext, SubscriptionService sub
         return trainers;
     }
 
-    public async Task<int> CreateUser(CreateUserDto userDto)
+    public async Task<int> CreateUserAsync(CreateUserDto userDto)
     {
         if (await dbContext.Users.AnyAsync(u => u.Username == userDto.Username))
             throw new ArgumentException("Username already exists");
-    
+
         if (await dbContext.Users.AnyAsync(u => u.Email == userDto.Email))
             throw new ArgumentException("Email already exists");
         
@@ -280,26 +291,34 @@ public class UserService(ApplicationDbContext dbContext, SubscriptionService sub
         dbContext.Users.Add(user);
         await dbContext.SaveChangesAsync();
         
-        if (userDto.SubscriptionType != 0)
+        if (user is Member && userDto.SubscriptionType != 0 && userDto.Subscription != null)
         {
-            var subscription = new CreateSubscriptionDto()
+            // Create subscription directly instead of using the service
+            var endDate = userDto.Subscription.Type switch
+            {
+                SubscriptionTypeEnum.Daily => userDto.Subscription.StartDate.AddDays(1),
+                SubscriptionTypeEnum.Monthly => userDto.Subscription.StartDate.AddMonths(1),
+                SubscriptionTypeEnum.Yearly => userDto.Subscription.StartDate.AddYears(1),
+                _ => throw new ArgumentException("Invalid subscription type")
+            };
+        
+            var subscription = new Subscription()
             {
                 MemberId = user.Id,
-                Type = user.SubscriptionType,
-                
-                StartDate = DateTime.UtcNow, 
-                EndDate = DateTime.UtcNow.AddMonths(user.SubscriptionType == SubscriptionTypeEnum.Monthly ? 1 : 12),
-                
-                Price = user.SubscriptionType == SubscriptionTypeEnum.Monthly ? 10 : 30,
-                Status = SubscriptionStatusEnum.Active,
-                PaymentMethod = PaymentMethodEnum.Cash,
-                AutoRenewal = true,
-                
+                Type = userDto.Subscription.Type,
+                StartDate = userDto.Subscription.StartDate,
+                EndDate = endDate,
+                Price = userDto.Subscription.Price,
+                CreatedAt = DateTime.UtcNow,
+                Status = userDto.Subscription.Status,
+                PaymentMethod = userDto.Subscription.PaymentMethod,
+                AutoRenewal = userDto.Subscription.AutoRenewal,
                 IsCancelled = false,
                 CancelledAt = null
             };
-            
-            await subscriptionService.CreateSubscriptionAsync(subscription);
+
+            dbContext.Subscriptions.Add(subscription);
+            await dbContext.SaveChangesAsync();
         }
         
         return user.Id;
@@ -349,6 +368,12 @@ public class UserService(ApplicationDbContext dbContext, SubscriptionService sub
                     member.Height = dto.Height.Value;
                 if (dto.Weight.HasValue)
                     member.Weight = dto.Weight.Value;
+
+                if (dto.Subscription?.SubscriptionType != 0)
+                {
+                   await subscriptionService.UpdateSubscriptionAsync(user.Id, dto.Subscription);
+                }
+                
                 break;
 
             case Trainer trainer:
@@ -362,9 +387,9 @@ public class UserService(ApplicationDbContext dbContext, SubscriptionService sub
                 user.Oib = dto.Oib;
                 user.IsActive = dto.IsActive;
                 user.UpdatedAt = DateTime.UtcNow;
-                user.DateOfBirth = dateOfBirth;
-                
+                user.DateOfBirth = dateOfBirth; 
                 user.SubscriptionType = dto.SubscriptionType;
+                
                 if (dto.Specialization != null)
                     trainer.Specialization = dto.Specialization;
                 if (dto.Certifications != null)
@@ -407,7 +432,7 @@ public class UserService(ApplicationDbContext dbContext, SubscriptionService sub
         return user.Id;
     }
     
-    public async Task DeleteUser(int id)
+    public async Task<string> DeleteUser(int id)
     {
         User? user = await dbContext.Users.FindAsync(id);
         
@@ -417,10 +442,16 @@ public class UserService(ApplicationDbContext dbContext, SubscriptionService sub
             user.IsActive = false;
             user.DeletedAt = DateTime.UtcNow;
 
-            // checking if the user has a subscription
+            // checking if user has a subscription
             if (user.SubscriptionType != 0)
             {
-                Subscription? subscription = await subscriptionService.GetSubscriptionByMemberId(user.Id);
+                var subscription = await dbContext.Subscriptions
+                    .FirstOrDefaultAsync(s => s.MemberId == id);
+                
+                if (subscription == null)
+                {
+                    return "Subscription with id " + subscription.Id + " does not exist.";
+                }
                 
                 subscription.Status = SubscriptionStatusEnum.Cancelled;
                 subscription.IsCancelled = true;
@@ -431,5 +462,7 @@ public class UserService(ApplicationDbContext dbContext, SubscriptionService sub
         }
         
         await dbContext.SaveChangesAsync();
+        
+        return "User with id " + id + " has been successfully deleted.";
     }
 }

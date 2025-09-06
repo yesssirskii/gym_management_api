@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using gym_management_api.DTO.Get;
 using gym_management_api.Enums;
 
 namespace gym_management_api.DTO.Update;
@@ -42,6 +43,7 @@ public class UpdateUserDto
     public string? FitnessGoals { get; set; }
     public decimal? Height { get; set; }
     public decimal? Weight { get; set; }
+    public UpdateSubscriptionDto? Subscription { get; set; }
     
     // Trainer-specific fields
     public TrainerSpecializationEnum Specialization { get; set; }

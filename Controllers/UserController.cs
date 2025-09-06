@@ -83,33 +83,26 @@ public class UserController(UserService userService) : ControllerBase
         }
     }
 
-    [HttpPost("create-new-user")]
-    public async Task<ActionResult> CreateNewUser([FromForm] CreateUserDto userDto)
+    [HttpPost("new")]
+    public async Task<ActionResult> CreateNewUser([FromBody] CreateUserDto userDto)
     {
         try
         {
-            await userService.CreateUser(userDto);
+            await userService.CreateUserAsync(userDto);
             
-            return Ok($"User created successfully with username {userDto.Username}");
+            return Ok(new { 
+                message = $"User created successfully with username {userDto.Username}",
+                success = true
+            });
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"Exception: {ex.Message}");
-            Console.WriteLine($"Inner Exception: {ex.InnerException?.Message}");
-            Console.WriteLine($"Stack Trace: {ex.StackTrace}");
-        
-            // If it's a DbUpdateException, get more details
-            if (ex is Microsoft.EntityFrameworkCore.DbUpdateException dbEx)
-            {
-                Console.WriteLine($"DB Update Exception: {dbEx.InnerException?.Message}");
-            }
-
-            throw;
+            return StatusCode(500, $"An error occured while updating the user; {ex.InnerException?.Message}");       
         }
     }
     
     [HttpPut("{id}")]
-    public async Task<ActionResult<int>> UpdateUser(int id, [FromForm] UpdateUserDto dto)
+    public async Task<ActionResult<int>> UpdateUser(int id, [FromBody] UpdateUserDto dto)
     {
         try
         {
@@ -135,9 +128,9 @@ public class UserController(UserService userService) : ControllerBase
         
             return Ok("User deleted successfully!");
         }
-        catch (Exception)
+        catch (Exception ex)
         {
-            return StatusCode(500, "An error occurred while deleting the user.");
+            return StatusCode(500, $"An error occurred while deleting the user; {ex.Message}");
         }
     }
 }

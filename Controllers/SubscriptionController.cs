@@ -1,4 +1,5 @@
 using gym_management_api.DTO.Create;
+using gym_management_api.DTO.Update;
 using gym_management_api.Models;
 using gym_management_api.Services;
 using Microsoft.AspNetCore.Mvc;
@@ -18,9 +19,9 @@ public class SubscriptionController(SubscriptionService subscriptionService) : C
             
             return Ok(subscriptions);
         }
-        catch (Exception)
+        catch (Exception ex)
         {
-            return StatusCode(500, "$Error while fetching the subscriptions: {ex.Message}");
+            return StatusCode(500, $"Error while fetching the subscriptions: {ex.Message}");
         }
     }
     
@@ -33,9 +34,9 @@ public class SubscriptionController(SubscriptionService subscriptionService) : C
             
             return Ok(subscription);
         }
-        catch (Exception)
+        catch (Exception ex)
         {
-            return StatusCode(500, "An error occurred while fetching subscription.");
+            return StatusCode(500, $"An error occurred while fetching subscription; {ex.Message}");
         }
     }
     
@@ -48,9 +49,24 @@ public class SubscriptionController(SubscriptionService subscriptionService) : C
 
             return Ok("Subscription created successfully!");
         }
-        catch (Exception)
+        catch (Exception ex)
         {
-            return StatusCode(500, "An error occurred while creating subscription.");       
+            return StatusCode(500, $"An error occurred while creating subscription; {ex.Message}");       
+        }
+    }
+    
+    [HttpPut("{id}")]
+    public async Task<IActionResult> UpdateSubscription(int userId, [FromForm] UpdateSubscriptionDto subscription)
+    {
+        try
+        {
+            await subscriptionService.UpdateSubscriptionAsync(userId, subscription);
+
+            return Ok("Subscription updated successfully!");
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, $"An error occurred while updating subscription; {ex.Message}");       
         }
     }
     
@@ -63,9 +79,9 @@ public class SubscriptionController(SubscriptionService subscriptionService) : C
             
             return Ok("Subscription deleted successfully!");       
         }
-        catch (Exception)
+        catch (Exception ex)
         {
-            return StatusCode(500, "An error occurred while deleting subscription.");
+            return StatusCode(500, $"An error occurred while deleting subscription; {ex.Message}");
         }
     }
 }

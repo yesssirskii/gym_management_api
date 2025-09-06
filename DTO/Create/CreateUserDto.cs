@@ -50,6 +50,8 @@ public class CreateUserDto
     public decimal? Height { get; set; }
     public decimal? Weight { get; set; }
     
+    public CreateSubscriptionDto? Subscription { get; set; }
+    
     // Trainer-specific fields
     public TrainerSpecializationEnum Specialization { get; set; }
     public string? Certifications { get; set; }

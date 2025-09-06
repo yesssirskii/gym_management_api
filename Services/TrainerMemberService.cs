@@ -199,8 +199,8 @@ public class TrainerMemberService(ApplicationDbContext dbContext) : ITrainerMemb
         {
             // Validate trainer exists and is available
             var trainer = await dbContext.Trainers.FindAsync(dto.TrainerId);
-            if (trainer == null || !trainer.IsActive)
-                throw new ArgumentException("Trainer not found or inactive");
+            if (trainer == null || !trainer.IsAvailable)
+                throw new ArgumentException("Trainer not found or unavailable");
 
             if (!trainer.IsAvailable)
                 throw new ArgumentException("Trainer is not available for new members");
