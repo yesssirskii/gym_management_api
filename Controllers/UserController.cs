@@ -97,7 +97,7 @@ public class UserController(UserService userService) : ControllerBase
         }
         catch (Exception ex)
         {
-            return StatusCode(500, $"An error occured while updating the user; {ex.InnerException?.Message}");       
+            return StatusCode(500, $"An error occured while updating the user; {ex?.Message}");       
         }
     }
     

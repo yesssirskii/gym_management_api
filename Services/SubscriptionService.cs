@@ -78,15 +78,16 @@ public class SubscriptionService(ApplicationDbContext dbContext)
     public async Task<string> UpdateSubscriptionAsync(int userId, UpdateSubscriptionDto dto)
     {
         var subscriptionToUpdate = await dbContext.Subscriptions
-            .FirstOrDefaultAsync(s => s.MemberId == userId);
+            .FirstOrDefaultAsync(s => s.MemberId == userId || s.Id == dto.Id);
         
         if (subscriptionToUpdate == null)
         {
             return "Subscription with id " + dto.Id + " does not exist.";
-        }
+        }   
 
         subscriptionToUpdate.Type = dto.SubscriptionType;
         subscriptionToUpdate.Status = dto.Status;
+        subscriptionToUpdate.Price = dto.Price;
         subscriptionToUpdate.PaymentMethod = dto.PaymentMethod;
         subscriptionToUpdate.AutoRenewal = dto.AutoRenewal;
         

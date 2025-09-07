@@ -47,7 +47,7 @@ public class SubscriptionController(SubscriptionService subscriptionService) : C
         {
             await subscriptionService.CreateSubscriptionAsync(subscription);
 
-            return Ok("Subscription created successfully!");
+            return Ok(new { message = $"Subscription for member {subscription.MemberId} created successfully.", success = true });
         }
         catch (Exception ex)
         {
@@ -56,13 +56,13 @@ public class SubscriptionController(SubscriptionService subscriptionService) : C
     }
     
     [HttpPut("{id}")]
-    public async Task<IActionResult> UpdateSubscription(int userId, [FromForm] UpdateSubscriptionDto subscription)
+    public async Task<IActionResult> UpdateSubscription(int id, [FromBody] UpdateSubscriptionDto subscription)
     {
         try
         {
-            await subscriptionService.UpdateSubscriptionAsync(userId, subscription);
+            await subscriptionService.UpdateSubscriptionAsync(id, subscription);
 
-            return Ok("Subscription updated successfully!");
+            return Ok(new { message = $"Subscription for member {id} updated successfully.", success = true });
         }
         catch (Exception ex)
         {
