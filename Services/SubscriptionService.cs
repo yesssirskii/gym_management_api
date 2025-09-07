@@ -65,9 +65,13 @@ public class SubscriptionService(ApplicationDbContext dbContext)
             .Where(s => s.IsDeleted == false)
             .Select(s => new GetSubscriptionsDto
             {
+                MembershipNumber = s.Member.MembershipNumber,
                 UserName = s.Member.Username,
+                StartDate = s.StartDate,
                 EndDate = s.EndDate,
                 Price = s.Price,
+                PaymentMethod = s.PaymentMethod,
+                AutoRenewal = s.AutoRenewal,
                 Status = s.Status,
                 IsCancelled = s.IsCancelled,
                 SubscriptionType = s.Type
