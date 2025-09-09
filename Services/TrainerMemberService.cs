@@ -76,7 +76,6 @@ public class TrainerMemberService(ApplicationDbContext dbContext) : ITrainerMemb
                     ActiveMembersCount = trainer.TrainerMembers.Count(tm => tm.Status == TrainingStatusEnum.Active),
                 };
 
-                // Map assigned members
                 dto.AssignedMembers = trainer.TrainerMembers.Select(tm => new TrainerMemberDto
                 {
                     Id = tm.Id,
@@ -175,11 +174,9 @@ public class TrainerMemberService(ApplicationDbContext dbContext) : ITrainerMemb
             var trainer = await dbContext.Trainers.FindAsync(id);
             if (trainer == null) return false;
 
-            // Soft delete
             trainer.IsActive = false;
             trainer.UpdatedAt = DateTime.UtcNow;
 
-            // End all active training relationships
             var activeTrainingRelationships = await dbContext.TrainerMembers
                 .Where(tm => tm.TrainerId == id && tm.Status == TrainingStatusEnum.Active)
                 .ToListAsync();
@@ -197,7 +194,6 @@ public class TrainerMemberService(ApplicationDbContext dbContext) : ITrainerMemb
         
         public async Task<int> AssignMemberToTrainerAsync(AssignMemberToTrainerDto dto)
         {
-            // Validate trainer exists and is available
             var trainer = await dbContext.Trainers.FindAsync(dto.TrainerId);
             if (trainer == null || !trainer.IsAvailable)
                 throw new ArgumentException("Trainer not found or unavailable");
@@ -205,12 +201,10 @@ public class TrainerMemberService(ApplicationDbContext dbContext) : ITrainerMemb
             if (!trainer.IsAvailable)
                 throw new ArgumentException("Trainer is not available for new members");
 
-            // Validate member exists
             var member = await dbContext.Members.FindAsync(dto.MemberId);
             if (member == null || !member.IsActive)
                 throw new ArgumentException("Member not found or inactive");
 
-            // Check if relationship already exists
             var existingRelationship = await dbContext.TrainerMembers
                 .FirstOrDefaultAsync(tm => tm.TrainerId == dto.TrainerId && 
                                            tm.MemberId == dto.MemberId && 
@@ -219,7 +213,6 @@ public class TrainerMemberService(ApplicationDbContext dbContext) : ITrainerMemb
             if (existingRelationship != null)
                 throw new ArgumentException("Member is already assigned to this trainer");
 
-            // Create new trainer-member relationship
             var trainerMember = new TrainerMember
             {
                 TrainerId = dto.TrainerId,

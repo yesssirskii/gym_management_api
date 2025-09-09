@@ -94,40 +94,6 @@ public class AuthController : ControllerBase
             }
         }
 
-        [HttpPost("forgot-password")]
-        public async Task<ActionResult> ForgotPassword([FromForm] ForgotPasswordDto forgotPasswordDto)
-        {
-            try
-            {
-                await _authService.ForgotPasswordAsync(forgotPasswordDto);
-                
-                return Ok(new { Message = "If the email exists, a password reset link has been sent" });
-            }
-            catch (Exception)
-            {
-                return StatusCode(500, new { Error = "An error occurred while processing the request" });
-            }
-        }
-
-        [HttpPost("reset-password")]
-        public async Task<ActionResult> ResetPassword([FromForm] ResetPasswordDto resetPasswordDto)
-        {
-            try
-            {
-                await _authService.ResetPasswordAsync(resetPasswordDto);
-                
-                return Ok(new { Message = "Password reset successfully" });
-            }
-            catch (BadRequestException ex)
-            {
-                return BadRequest(new { Error = ex.Message });
-            }
-            catch (Exception)
-            {
-                return StatusCode(500, new { Error = "An error occurred while resetting password" });
-            }
-        }
-
         [HttpGet("me")]
         [Authorize]
         public async Task<ActionResult<UserInfoDto>> GetCurrentUser()
