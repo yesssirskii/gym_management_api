@@ -12,10 +12,6 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
     public DbSet<Personnel> Personnel { get; set; }
     public DbSet<Subscription> Subscriptions { get; set; }
     public DbSet<TrainerMember> TrainerMembers { get; set; }
-    public DbSet<WorkoutSession> WorkoutSessions { get; set; }
-    public DbSet<Notification> Notifications { get; set; }
-    public DbSet<Equipment> Equipment { get; set; }
-    
     public DbSet<RefreshToken> RefreshTokens { get; set; }
     public DbSet<PasswordResetToken> PasswordResetTokens { get; set; }
 
@@ -81,44 +77,6 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
 
             entity.HasIndex(e => new { e.TrainerId, e.MemberId });
         });
-
-        modelBuilder.Entity<WorkoutSession>(entity =>
-        {
-            entity.HasOne(ws => ws.Trainer)
-                .WithMany(t => t.WorkoutSessions)
-                .HasForeignKey(ws => ws.TrainerId)
-                .OnDelete(DeleteBehavior.Restrict);
-
-            entity.HasOne(ws => ws.Member)
-                .WithMany(m => m.WorkoutSessions)
-                .HasForeignKey(ws => ws.MemberId)
-                .OnDelete(DeleteBehavior.Restrict);
-
-            entity.HasIndex(e => new { e.TrainerId, e.ScheduledDate });
-            entity.HasIndex(e => new { e.MemberId, e.ScheduledDate });
-        });
-
-        modelBuilder.Entity<Notification>(entity =>
-        {
-            entity.HasOne(n => n.Sender)
-                .WithMany(u => u.SentNotifications)
-                .HasForeignKey(n => n.SenderId)
-                .OnDelete(DeleteBehavior.SetNull);
-
-            entity.HasOne(n => n.Recipient)
-                .WithMany(u => u.ReceivedNotifications)
-                .HasForeignKey(n => n.RecipientId)
-                .OnDelete(DeleteBehavior.Cascade);
-
-            entity.HasIndex(e => new { e.RecipientId, e.CreatedAt });
-            entity.HasIndex(e => e.IsRead);
-        });
-
-        modelBuilder.Entity<Equipment>(entity =>
-        {
-            entity.HasIndex(e => e.Name);
-            entity.HasIndex(e => e.Status);
-        });
         
         modelBuilder.Entity<RefreshToken>(entity =>
         {
@@ -138,7 +96,6 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
                 .OnDelete(DeleteBehavior.Cascade);
         });
 
-        // Configure PasswordResetToken
         modelBuilder.Entity<PasswordResetToken>(entity =>
         {
             entity.HasKey(prt => prt.Id);

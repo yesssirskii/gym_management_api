@@ -31,5 +31,4 @@ public class Member : User
     // Navigation properties
     public virtual ICollection<Subscription> Subscriptions { get; set; } = new List<Subscription>();
     public virtual ICollection<TrainerMember> TrainerMembers { get; set; } = new List<TrainerMember>();
-    public virtual ICollection<WorkoutSession> WorkoutSessions { get; set; } = new List<WorkoutSession>();
 }

@@ -22,120 +22,6 @@ namespace gym_management_api.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
-            modelBuilder.Entity("gym_management_api.Models.Equipment", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Brand")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("character varying(50)");
-
-                    b.Property<string>("Description")
-                        .IsRequired()
-                        .HasMaxLength(500)
-                        .HasColumnType("character varying(500)");
-
-                    b.Property<DateTime?>("LastMaintenanceDate")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<string>("Location")
-                        .IsRequired()
-                        .HasMaxLength(255)
-                        .HasColumnType("character varying(255)");
-
-                    b.Property<string>("MaintenanceNotes")
-                        .IsRequired()
-                        .HasMaxLength(500)
-                        .HasColumnType("character varying(500)");
-
-                    b.Property<string>("Model")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("character varying(50)");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("character varying(100)");
-
-                    b.Property<DateTime?>("NextMaintenanceDate")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<DateTime>("PurchaseDate")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<decimal>("PurchasePrice")
-                        .HasColumnType("decimal(10,2)");
-
-                    b.Property<int>("Status")
-                        .HasColumnType("integer");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("Name");
-
-                    b.HasIndex("Status");
-
-                    b.ToTable("Equipment");
-                });
-
-            modelBuilder.Entity("gym_management_api.Models.Notification", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("ActionUrl")
-                        .IsRequired()
-                        .HasMaxLength(255)
-                        .HasColumnType("character varying(255)");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<bool>("IsRead")
-                        .HasColumnType("boolean");
-
-                    b.Property<string>("Message")
-                        .IsRequired()
-                        .HasMaxLength(1000)
-                        .HasColumnType("character varying(1000)");
-
-                    b.Property<DateTime?>("ReadAt")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<int>("RecipientId")
-                        .HasColumnType("integer");
-
-                    b.Property<int?>("SenderId")
-                        .HasColumnType("integer");
-
-                    b.Property<string>("Title")
-                        .IsRequired()
-                        .HasMaxLength(255)
-                        .HasColumnType("character varying(255)");
-
-                    b.Property<int>("Type")
-                        .HasColumnType("integer");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("IsRead");
-
-                    b.HasIndex("SenderId");
-
-                    b.HasIndex("RecipientId", "CreatedAt");
-
-                    b.ToTable("Notifications");
-                });
-
             modelBuilder.Entity("gym_management_api.Models.PasswordResetToken", b =>
                 {
                     b.Property<int>("Id")
@@ -414,62 +300,6 @@ namespace gym_management_api.Migrations
                     b.UseTphMappingStrategy();
                 });
 
-            modelBuilder.Entity("gym_management_api.Models.WorkoutSession", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<DateTime?>("ActualEndTime")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<DateTime?>("ActualStartTime")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<string>("MemberFeedback")
-                        .IsRequired()
-                        .HasMaxLength(500)
-                        .HasColumnType("character varying(500)");
-
-                    b.Property<int>("MemberId")
-                        .HasColumnType("integer");
-
-                    b.Property<decimal?>("MemberRating")
-                        .HasColumnType("decimal(3,2)");
-
-                    b.Property<string>("Notes")
-                        .IsRequired()
-                        .HasMaxLength(500)
-                        .HasColumnType("character varying(500)");
-
-                    b.Property<DateTime>("ScheduledDate")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<int>("Status")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("TrainerId")
-                        .HasColumnType("integer");
-
-                    b.Property<string>("WorkoutPlan")
-                        .IsRequired()
-                        .HasMaxLength(500)
-                        .HasColumnType("character varying(500)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("MemberId", "ScheduledDate");
-
-                    b.HasIndex("TrainerId", "ScheduledDate");
-
-                    b.ToTable("WorkoutSessions");
-                });
-
             modelBuilder.Entity("gym_management_api.Models.Member", b =>
                 {
                     b.HasBaseType("gym_management_api.Models.User");
@@ -594,24 +424,6 @@ namespace gym_management_api.Migrations
                     b.HasDiscriminator().HasValue("Trainer");
                 });
 
-            modelBuilder.Entity("gym_management_api.Models.Notification", b =>
-                {
-                    b.HasOne("gym_management_api.Models.User", "Recipient")
-                        .WithMany("ReceivedNotifications")
-                        .HasForeignKey("RecipientId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("gym_management_api.Models.User", "Sender")
-                        .WithMany("SentNotifications")
-                        .HasForeignKey("SenderId")
-                        .OnDelete(DeleteBehavior.SetNull);
-
-                    b.Navigation("Recipient");
-
-                    b.Navigation("Sender");
-                });
-
             modelBuilder.Entity("gym_management_api.Models.PasswordResetToken", b =>
                 {
                     b.HasOne("gym_management_api.Models.User", "User")
@@ -664,25 +476,6 @@ namespace gym_management_api.Migrations
                     b.Navigation("Trainer");
                 });
 
-            modelBuilder.Entity("gym_management_api.Models.WorkoutSession", b =>
-                {
-                    b.HasOne("gym_management_api.Models.Member", "Member")
-                        .WithMany("WorkoutSessions")
-                        .HasForeignKey("MemberId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.HasOne("gym_management_api.Models.Trainer", "Trainer")
-                        .WithMany("WorkoutSessions")
-                        .HasForeignKey("TrainerId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.Navigation("Member");
-
-                    b.Navigation("Trainer");
-                });
-
             modelBuilder.Entity("gym_management_api.Models.Trainer", b =>
                 {
                     b.HasOne("gym_management_api.Models.Personnel", "Personnel")
@@ -693,20 +486,11 @@ namespace gym_management_api.Migrations
                     b.Navigation("Personnel");
                 });
 
-            modelBuilder.Entity("gym_management_api.Models.User", b =>
-                {
-                    b.Navigation("ReceivedNotifications");
-
-                    b.Navigation("SentNotifications");
-                });
-
             modelBuilder.Entity("gym_management_api.Models.Member", b =>
                 {
                     b.Navigation("Subscriptions");
 
                     b.Navigation("TrainerMembers");
-
-                    b.Navigation("WorkoutSessions");
                 });
 
             modelBuilder.Entity("gym_management_api.Models.Personnel", b =>
@@ -717,8 +501,6 @@ namespace gym_management_api.Migrations
             modelBuilder.Entity("gym_management_api.Models.Trainer", b =>
                 {
                     b.Navigation("TrainerMembers");
-
-                    b.Navigation("WorkoutSessions");
                 });
 #pragma warning restore 612, 618
         }

@@ -53,8 +53,4 @@ public abstract class User
     
     public DateTime? LastLoginAt { get; set; }
     public SubscriptionTypeEnum SubscriptionType { get; set; }
-    
-    // Navigation properties
-    public virtual ICollection<Notification> SentNotifications { get; set; } = new List<Notification>();
-    public virtual ICollection<Notification> ReceivedNotifications { get; set; } = new List<Notification>();
 }

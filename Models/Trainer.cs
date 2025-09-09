@@ -25,11 +25,8 @@ public class Trainer : User
         
     public bool IsAvailable { get; set; } = true;
         
-    // Foreign key to Personnel (optional - trainer can be personnel)
     public int? PersonnelId { get; set; }
     public virtual Personnel Personnel { get; set; }
         
-    // Navigation properties
     public virtual ICollection<TrainerMember> TrainerMembers { get; set; } = new List<TrainerMember>();
-    public virtual ICollection<WorkoutSession> WorkoutSessions { get; set; } = new List<WorkoutSession>();
 }
