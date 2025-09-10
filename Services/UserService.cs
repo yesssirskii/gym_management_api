@@ -293,7 +293,6 @@ public class UserService(ApplicationDbContext dbContext, SubscriptionService sub
         
         if (user is Member && userDto.SubscriptionType != 0 && userDto.Subscription != null)
         {
-            // Create subscription directly instead of using the service
             var endDate = userDto.Subscription.Type switch
             {
                 SubscriptionTypeEnum.Daily => userDto.Subscription.StartDate.AddDays(1),
@@ -330,7 +329,6 @@ public class UserService(ApplicationDbContext dbContext, SubscriptionService sub
         if (user == null)
             throw new ArgumentException("User not found");
 
-        // Validate email uniqueness if email is being updated
         if (!string.IsNullOrEmpty(dto.Email) && dto.Email != user.Email)
         {
             if (await dbContext.Users.AnyAsync(u => u.Email == dto.Email))
@@ -339,7 +337,6 @@ public class UserService(ApplicationDbContext dbContext, SubscriptionService sub
 
         DateTime dateOfBirth = DateTime.SpecifyKind(dto.DateOfBirth, DateTimeKind.Utc);
 
-        // Handle type-specific updates
         switch (user)
         {
             case Member member:

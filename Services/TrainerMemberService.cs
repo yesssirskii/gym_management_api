@@ -148,7 +148,6 @@ public class TrainerMemberService(ApplicationDbContext dbContext) : ITrainerMemb
             var trainer = await dbContext.Trainers.FindAsync(id);
             if (trainer == null) return false;
 
-            // Update fields only if provided
             if (!string.IsNullOrEmpty(dto.FirstName)) trainer.FirstName = dto.FirstName;
             if (!string.IsNullOrEmpty(dto.LastName)) trainer.LastName = dto.LastName;
             if (!string.IsNullOrEmpty(dto.PhoneNumber)) trainer.PhoneNumber = dto.PhoneNumber;

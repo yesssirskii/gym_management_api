@@ -14,7 +14,6 @@ builder.Services.AddOpenApi();
 builder.Services.AddControllers()
     .AddJsonOptions(options =>
     {
-        // Makes enums serialize/deserialize as strings in JSON
         options.JsonSerializerOptions.Converters.Add(new System.Text.Json.Serialization.JsonStringEnumConverter());
     });
 builder.Services.AddEndpointsApiExplorer();

@@ -40,13 +40,11 @@ public class JwtMiddleware(RequestDelegate next, IConfiguration configuration)
             var jwtToken = (JwtSecurityToken)validatedToken;
             var userId = int.Parse(jwtToken.Claims.First(x => x.Type == ClaimTypes.NameIdentifier).Value);
 
-            // Attach user to context
             var user = await dbContext.Users.FindAsync(userId);
             context.Items["User"] = user;
         }
         catch
         {
-            // Token validation failed
         }
     }
 }
