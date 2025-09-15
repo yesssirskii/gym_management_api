@@ -96,6 +96,7 @@ public class SubscriptionService(ApplicationDbContext dbContext)
         subscriptionToUpdate.Price = dto.Price;
         subscriptionToUpdate.PaymentMethod = dto.PaymentMethod;
         subscriptionToUpdate.AutoRenewal = dto.AutoRenewal;
+        subscriptionToUpdate.EndDate = dto.EndDate;
         
         await dbContext.SaveChangesAsync();
         
