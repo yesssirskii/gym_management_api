@@ -101,12 +101,12 @@ public class UserController(UserService userService) : ControllerBase
         }
     }
     
-    [HttpPut("{id}")]
-    public async Task<ActionResult<int>> UpdateUser(int id, [FromBody] UpdateUserDto dto)
+    [HttpPut("{id}/{isSubscriptionUpdate:bool}")]
+    public async Task<ActionResult<int>> UpdateUser(int id, bool isSubscriptionUpdate,[FromBody] UpdateUserDto dto)
     {
         try
         {
-            var updateUser = await userService.UpdateUserAsync(id, dto);
+            var updateUser = await userService.UpdateUserAsync(id, isSubscriptionUpdate, dto);
 
             if (updateUser == null || updateUser == 0)
                 return NotFound("User not found.");

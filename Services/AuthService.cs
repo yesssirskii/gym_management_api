@@ -13,11 +13,11 @@ public class AuthService(ApplicationDbContext context, IJwtService jwtService, I
         try
         {
             var user = await context.Users
-                .FirstOrDefaultAsync(u => u.Username == loginDto.Username && u.IsActive);
+                .FirstOrDefaultAsync(u => u.Username == loginDto.Username);
             
             if (user == null || !BCrypt.Net.BCrypt.Verify(loginDto.Password, user.PasswordHash))
             {
-                throw new UnauthorizedAccessException("Invalid username or password");
+                    throw new UnauthorizedAccessException("Invalid username or password");
             }
 
             var accessToken = jwtService.GenerateAccessToken(user);
@@ -50,7 +50,9 @@ public class AuthService(ApplicationDbContext context, IJwtService jwtService, I
                     FirstName = user.FirstName,
                     LastName = user.LastName,
                     UserType = user.GetType().Name,
-                    Role = user is Personnel personnel ? personnel.Role.ToString() : null
+                    Role = user is Personnel personnel ? personnel.Role.ToString() : null,
+                    PhoneNumber = user.PhoneNumber,
+                    Address = user.Address,
                 }
             };
         }

@@ -21,7 +21,9 @@ public class JwtService(IConfiguration configuration) : IJwtService
             new(ClaimTypes.Email, user.Email),
             new("UserType", user.GetType().Name),
             new("FirstName", user.FirstName),
-            new("LastName", user.LastName)
+            new("LastName", user.LastName),
+            new("PhoneNumber", user.PhoneNumber),
+            new("Address", user.Address),
         };
 
         if (user is Personnel personnel)

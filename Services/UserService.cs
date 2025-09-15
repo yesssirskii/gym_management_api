@@ -315,6 +315,8 @@ public class UserService(ApplicationDbContext dbContext, SubscriptionService sub
                 IsCancelled = false,
                 CancelledAt = null
             };
+            
+            user.SubscriptionType = subscription.Type;
 
             dbContext.Subscriptions.Add(subscription);
             await dbContext.SaveChangesAsync();
@@ -323,7 +325,7 @@ public class UserService(ApplicationDbContext dbContext, SubscriptionService sub
         return user.Id;
     }
     
-    public async Task<int> UpdateUserAsync(int id, UpdateUserDto dto)
+    public async Task<int> UpdateUserAsync(int id, bool isSubscriptionUpdate, UpdateUserDto dto)
     {
         var user = await dbContext.Users.FindAsync(id);
         if (user == null)
@@ -342,7 +344,7 @@ public class UserService(ApplicationDbContext dbContext, SubscriptionService sub
             case Member member:
                 user.FirstName = dto.FirstName;
                 user.LastName = dto.LastName;
-                user.Username = dto.Username;
+                //user.Username = dto.Username;
                 user.PhoneNumber = dto.PhoneNumber;
                 user.Gender = dto.Gender;
                 user.Address = dto.Address ?? "";
@@ -351,7 +353,6 @@ public class UserService(ApplicationDbContext dbContext, SubscriptionService sub
                 user.IsActive = dto.IsActive;
                 user.UpdatedAt = DateTime.UtcNow;
                 user.DateOfBirth = dateOfBirth;
-                user.SubscriptionType = dto.SubscriptionType;
                 
                 if (!string.IsNullOrEmpty(dto.EmergencyContactName))
                     member.EmergencyContactName = dto.EmergencyContactName;
@@ -366,7 +367,7 @@ public class UserService(ApplicationDbContext dbContext, SubscriptionService sub
                 if (dto.Weight.HasValue)
                     member.Weight = dto.Weight.Value;
 
-                if (dto.Subscription?.SubscriptionType != 0)
+                if (isSubscriptionUpdate && dto.Subscription != null)
                 {
                    await subscriptionService.UpdateSubscriptionAsync(user.Id, dto.Subscription);
                 }
@@ -376,7 +377,7 @@ public class UserService(ApplicationDbContext dbContext, SubscriptionService sub
             case Trainer trainer:
                 user.FirstName = dto.FirstName;
                 user.LastName = dto.LastName;
-                user.Username = dto.Username;
+                //user.Username = dto.Username;
                 user.PhoneNumber = dto.PhoneNumber;
                 user.Gender = dto.Gender;
                 user.Address = dto.Address ?? "";
@@ -402,7 +403,7 @@ public class UserService(ApplicationDbContext dbContext, SubscriptionService sub
             case Personnel personnel:
                 user.FirstName = dto.FirstName;
                 user.LastName = dto.LastName;
-                user.Username = dto.Username;
+                //user.Username = dto.Username;
                 user.PhoneNumber = dto.PhoneNumber;
                 user.Gender = dto.Gender;
                 user.Address = dto.Address ?? "";

@@ -65,7 +65,9 @@ public class SubscriptionService(ApplicationDbContext dbContext)
             .Where(s => s.IsDeleted == false)
             .Select(s => new GetSubscriptionsDto
             {
+                Id = s.Id,
                 MembershipNumber = s.Member.MembershipNumber,
+                UserId = s.Member.Id,
                 UserName = s.Member.Username,
                 StartDate = s.StartDate,
                 EndDate = s.EndDate,
@@ -82,7 +84,7 @@ public class SubscriptionService(ApplicationDbContext dbContext)
     public async Task<string> UpdateSubscriptionAsync(int userId, UpdateSubscriptionDto dto)
     {
         var subscriptionToUpdate = await dbContext.Subscriptions
-            .FirstOrDefaultAsync(s => s.MemberId == userId || s.Id == dto.Id);
+            .FirstOrDefaultAsync(s => s.MemberId == userId);
         
         if (subscriptionToUpdate == null)
         {

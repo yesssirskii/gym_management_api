@@ -5,7 +5,9 @@ namespace gym_management_api.DTO.Get;
 
 public class GetSubscriptionsDto
 {
+    public int Id { get; set; }
     public string? MembershipNumber { get; set; }
+    public int UserId { get; set; }
     public string UserName { get; set; }
     public DateTime StartDate { get; set; }
     public DateTime EndDate { get; set; }

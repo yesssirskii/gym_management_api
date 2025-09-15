@@ -9,4 +9,6 @@ public class UserInfoDto
     public string LastName { get; set; }
     public string UserType { get; set; }
     public string Role { get; set; } // For personnel
+    public string PhoneNumber { get; set; }
+    public string Address { get; set; }
 }
