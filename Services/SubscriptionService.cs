@@ -102,6 +102,26 @@ public class SubscriptionService(ApplicationDbContext dbContext)
         
         return "Subscription with id " + dto.Id + " has been successfully updated.";
     }
+    
+    public async Task<string> RenewSubscriptionAsync(int userId, UpdateSubscriptionDto dto)
+    {
+        var subscriptionToRenew = await dbContext.Subscriptions
+            .FirstOrDefaultAsync(s => s.MemberId == userId);
+        
+        if (subscriptionToRenew == null)
+        {
+            return "Subscription with id " + dto.Id + " does not exist.";
+        }   
+
+        subscriptionToRenew.StartDate = DateTime.UtcNow;
+        subscriptionToRenew.EndDate = dto.EndDate;
+        subscriptionToRenew.Status = SubscriptionStatusEnum.Active;
+        subscriptionToRenew.UpdatedAt = DateTime.UtcNow;
+        
+        await dbContext.SaveChangesAsync();
+        
+        return "Subscription with id " + dto.Id + " has been successfully updated.";
+    }
 
     public async Task<string> DeleteSubscription(int id)
     {

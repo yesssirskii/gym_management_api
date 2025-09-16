@@ -70,6 +70,26 @@ public class SubscriptionController(SubscriptionService subscriptionService) : C
         }
     }
     
+    [HttpPut("renew/{id}")]
+    public async Task<IActionResult> RenewSubscription(int id, [FromBody] UpdateSubscriptionDto subscription)
+    {
+        try
+        {
+            var renewedSubscription = await subscriptionService.RenewSubscriptionAsync(id, subscription);
+
+            if (renewedSubscription == null)
+            {
+                return BadRequest("Subscription not found.");
+            }
+
+            return Ok(new { message = $"Subscription for member {id} renewed successfully.", success = true });
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, $"An error occurred while updating subscription; {ex.Message}");       
+        }
+    }
+    
     [HttpDelete("subscription/{id}")]
     public async Task<IActionResult> DeleteSubscription(int id)
     {

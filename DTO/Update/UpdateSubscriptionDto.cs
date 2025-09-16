@@ -11,4 +11,5 @@ public class UpdateSubscriptionDto
     public PaymentMethodEnum PaymentMethod { get; set; }
     public DateTime EndDate { get; set; }
     public bool AutoRenewal { get; set; }
+    public DateTime UpdatedAt { get; set; }
 }

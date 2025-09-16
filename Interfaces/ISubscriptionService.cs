@@ -9,6 +9,7 @@ public interface ISubscriptionService
     Task<List<GetSubscriptionsDto>> GetSubscriptionsAsync();
     Task<GetSubscriptionByIdDto?> GetSubscriptionById(int id);
     Task<string> UpdateSubscriptionAsync(int userId, UpdateSubscriptionDto dto);
+    Task<string> RenewSubscriptionAsync(int userId, UpdateSubscriptionDto dto);
     Task<int> CreateSubscriptionAsync(CreateSubscriptionDto dto);
     Task<string> DeleteSubscription(int id);
 }

@@ -155,6 +155,9 @@ namespace gym_management_api.Migrations
                     b.Property<int>("Type")
                         .HasColumnType("integer");
 
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone");
+
                     b.HasKey("Id");
 
                     b.HasIndex("MemberId", "StartDate");

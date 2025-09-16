@@ -325,7 +325,7 @@ public class UserService(ApplicationDbContext dbContext, SubscriptionService sub
         return user.Id;
     }
     
-    public async Task<int> UpdateUserAsync(int id, bool isSubscriptionUpdate, UpdateUserDto dto)
+    public async Task<int> UpdateUserAsync(int id, bool isSubscriptionUpdate, UpdateUserDto? dto)
     {
         var user = await dbContext.Users.FindAsync(id);
         if (user == null)
