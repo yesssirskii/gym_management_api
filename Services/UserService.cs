@@ -241,6 +241,7 @@ public class UserService(ApplicationDbContext dbContext, SubscriptionService sub
                 Gender = userDto.Gender,
                 Address = userDto.Address ?? "",
                 SubscriptionType = userDto.SubscriptionType,
+                
                 MembershipNumber = $"MEM{DateTime.UtcNow:yyyyMMdd}{new Random().Next(1000, 9999)}",
                 EmergencyContactName = userDto.EmergencyContactName,
                 EmergencyContactPhone = userDto.EmergencyContactPhone,
@@ -325,7 +326,7 @@ public class UserService(ApplicationDbContext dbContext, SubscriptionService sub
         return user.Id;
     }
     
-    public async Task<int> UpdateUserAsync(int id, bool isSubscriptionUpdate, UpdateUserDto? dto)
+    public async Task<int> UpdateUserAsync(int id, bool isSubscriptionUpdate, UpdateUserDto dto)
     {
         var user = await dbContext.Users.FindAsync(id);
         if (user == null)
@@ -371,6 +372,8 @@ public class UserService(ApplicationDbContext dbContext, SubscriptionService sub
                 {
                    await subscriptionService.UpdateSubscriptionAsync(user.Id, dto.Subscription);
                 }
+                
+                user.SubscriptionType = dto.SubscriptionType;
                 
                 break;
 
@@ -432,7 +435,7 @@ public class UserService(ApplicationDbContext dbContext, SubscriptionService sub
     
     public async Task<string> DeleteUser(int id)
     {
-        User? user = await dbContext.Users.FindAsync(id);
+        var user = await dbContext.Users.FindAsync(id);
         
         if (user != null)
         {
