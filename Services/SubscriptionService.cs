@@ -96,7 +96,11 @@ public class SubscriptionService(ApplicationDbContext dbContext)
         subscriptionToUpdate.Price = dto.Price;
         subscriptionToUpdate.PaymentMethod = dto.PaymentMethod;
         subscriptionToUpdate.AutoRenewal = dto.AutoRenewal;
-        subscriptionToUpdate.EndDate = dto.EndDate;
+
+        if (subscriptionToUpdate.Status is SubscriptionStatusEnum.Cancelled or SubscriptionStatusEnum.Expired)
+            subscriptionToUpdate.EndDate = DateTime.UtcNow;
+        else
+            subscriptionToUpdate.EndDate = dto.EndDate;
         
         await dbContext.SaveChangesAsync();
         
@@ -117,6 +121,12 @@ public class SubscriptionService(ApplicationDbContext dbContext)
         subscriptionToRenew.EndDate = dto.EndDate;
         subscriptionToRenew.Status = SubscriptionStatusEnum.Active;
         subscriptionToRenew.UpdatedAt = DateTime.UtcNow;
+        subscriptionToRenew.EndDate = subscriptionToRenew.Type switch
+        {
+            SubscriptionTypeEnum.Daily => dto.StartDate.AddDays(1),
+            SubscriptionTypeEnum.Monthly => dto.StartDate.AddMonths(1),
+            SubscriptionTypeEnum.Yearly => dto.StartDate.AddYears(1),
+        };
         
         await dbContext.SaveChangesAsync();
         
