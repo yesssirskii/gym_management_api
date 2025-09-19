@@ -10,6 +10,10 @@ namespace gym_management_api.Controllers;
 [Route("api/[controller]")]
 public class UserController(UserService userService) : ControllerBase
 {
+    /// <summary>
+    /// Returns all GetUsersDto objects for the user tables.
+    /// </summary>
+    /// <returns></returns>
     [HttpGet("user-table-data")]
     public async Task<ActionResult<List<GetUsersDto>>> GetUserDataForTable()
     {
@@ -24,6 +28,11 @@ public class UserController(UserService userService) : ControllerBase
         }
     }
     
+    /// <summary>
+    /// Gets a user by their id.
+    /// </summary>
+    /// <param name="userId"></param>
+    /// <returns></returns>
     [HttpGet("{userId}")]
     public async Task<ActionResult<List<GetUsersDto>>> GetUserById(int userId)
     {
@@ -38,6 +47,10 @@ public class UserController(UserService userService) : ControllerBase
         }
     }
     
+    /// <summary>
+    /// Returns all users whcich have the UserType of Member.
+    /// </summary>
+    /// <returns></returns>
     [HttpGet("members")]
     public async Task<ActionResult<List<GetUsersDto>>> GetAllMembers()
     {
@@ -53,6 +66,10 @@ public class UserController(UserService userService) : ControllerBase
         }
     }
     
+    /// <summary>
+    /// Returns all users whcich have the UserType of Trainer.
+    /// </summary>
+    /// <returns></returns>
     [HttpGet("trainers")]
     public async Task<ActionResult<List<GetUsersDto>>> GetAllTrainers()
     {
@@ -68,6 +85,10 @@ public class UserController(UserService userService) : ControllerBase
         }
     }
     
+    /// <summary>
+    /// Returns all users whcich have the UserType of Personnel.
+    /// </summary>
+    /// <returns></returns>
     [HttpGet("personnel")]
     public async Task<ActionResult<List<GetPersonnelDto>>> GetAllPersonnel()
     {
@@ -83,6 +104,11 @@ public class UserController(UserService userService) : ControllerBase
         }
     }
 
+    /// <summary>
+    /// Creates a new User entity object.
+    /// </summary>
+    /// <param name="userDto"></param>
+    /// <returns></returns>
     [HttpPost("new")]
     public async Task<ActionResult> CreateNewUser([FromBody] CreateUserDto userDto)
     {
@@ -101,6 +127,13 @@ public class UserController(UserService userService) : ControllerBase
         }
     }
     
+    /// <summary>
+    /// Updates a user entity object and subscription if applicable.
+    /// </summary>
+    /// <param name="id"></param>
+    /// <param name="isSubscriptionUpdate"></param>
+    /// <param name="dto"></param>
+    /// <returns></returns>
     [HttpPut("{id}/{isSubscriptionUpdate:bool}")]
     public async Task<ActionResult<int>> UpdateUser(int id, bool isSubscriptionUpdate,[FromBody] UpdateUserDto dto)
     {
@@ -119,6 +152,11 @@ public class UserController(UserService userService) : ControllerBase
         }
     }
     
+    /// <summary>
+    /// Soft-deletes a user by their id.
+    /// </summary>
+    /// <param name="id"></param>
+    /// <returns></returns>
     [HttpDelete("{id}")]
     public async Task<ActionResult> DeleteUser(int id)
     {

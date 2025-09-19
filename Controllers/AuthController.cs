@@ -18,6 +18,11 @@ public class AuthController : ControllerBase
             _authService = authService;
         }
 
+        /// <summary>
+        /// Performs user login.
+        /// </summary>
+        /// <param name="loginDto"></param>
+        /// <returns></returns>
         [HttpPost("login")]
         public async Task<ActionResult<LoginResponseDto>> Login([FromForm] LoginDto loginDto)
         {
@@ -38,6 +43,11 @@ public class AuthController : ControllerBase
             }
         }
 
+        /// <summary>
+        /// Generates a new refresh token.
+        /// </summary>
+        /// <param name="refreshTokenDto"></param>
+        /// <returns></returns>
         [HttpPost("refresh")]
         public async Task<ActionResult<LoginResponseDto>> RefreshToken([FromForm] RefreshTokenDto refreshTokenDto)
         {
@@ -56,6 +66,11 @@ public class AuthController : ControllerBase
             }
         }
 
+        /// <summary>
+        /// Performs user logout.
+        /// </summary>
+        /// <param name="refreshTokenDto"></param>
+        /// <returns></returns>
         [HttpPost("logout")]
         [Authorize]
         public async Task<ActionResult> Logout([FromForm] RefreshTokenDto refreshTokenDto = null)
@@ -73,6 +88,11 @@ public class AuthController : ControllerBase
             }
         }
 
+        /// <summary>
+        /// Performs user password change.
+        /// </summary>
+        /// <param name="changePasswordDto"></param>
+        /// <returns></returns>
         [HttpPost("change-password")]
         [Authorize]
         public async Task<ActionResult> ChangePassword([FromForm] ChangePasswordDto changePasswordDto)
@@ -94,6 +114,10 @@ public class AuthController : ControllerBase
             }
         }
 
+        /// <summary>
+        /// Gets the current user's information.
+        /// </summary>
+        /// <returns></returns>
         [HttpGet("me")]
         [Authorize]
         public async Task<ActionResult<UserInfoDto>> GetCurrentUser()
@@ -112,6 +136,10 @@ public class AuthController : ControllerBase
             return Ok(userInfo);
         }
 
+        /// <summary>
+        /// Revokes all user's tokens.
+        /// </summary>
+        /// <returns></returns>
         [HttpPost("revoke-all-tokens")]
         [Authorize]
         public async Task<ActionResult> RevokeAllTokens()

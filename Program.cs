@@ -1,3 +1,4 @@
+using System.Reflection;
 using System.Text;
 using gym_management_api;
 using gym_management_api.Interfaces;
@@ -22,6 +23,10 @@ builder.Services.AddSwaggerGen(c =>
     c.UseAllOfToExtendReferenceSchemas();
     c.SupportNonNullableReferenceTypes();
     c.SchemaFilter<EmptyStringSchemaFilter>();
+    
+    var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+    var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+    c.IncludeXmlComments(xmlPath);
 });
 
 builder.Services.AddDbContext<ApplicationDbContext>(options =>

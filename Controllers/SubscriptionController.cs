@@ -10,6 +10,10 @@ namespace gym_management_api.Controllers;
 [Route("api/[controller]")]
 public class SubscriptionController(SubscriptionService subscriptionService) : ControllerBase
 {
+    /// <summary>
+    /// Returns all subscriptions for the subscriptions table.
+    /// </summary>
+    /// <returns></returns>
     [HttpGet("subscriptions")]
     public async Task<IActionResult> GetSubscriptions()
     {
@@ -25,6 +29,11 @@ public class SubscriptionController(SubscriptionService subscriptionService) : C
         }
     }
     
+    /// <summary>
+    /// Returns a specific subscription for the given user id.
+    /// </summary>
+    /// <param name="userId"></param>
+    /// <returns></returns>
     [HttpGet("{userId}")]
     public async Task<IActionResult> GetSubscriptionByUserId(int userId)
     {
@@ -40,6 +49,11 @@ public class SubscriptionController(SubscriptionService subscriptionService) : C
         }
     }
     
+    /// <summary>
+    /// Creates a new subscription for the given user id.
+    /// </summary>
+    /// <param name="subscription"></param>
+    /// <returns></returns>
     [HttpPost("new-subscription")]
     public async Task<IActionResult> CreateSubscription([FromForm] CreateSubscriptionDto subscription)
     {
@@ -55,6 +69,12 @@ public class SubscriptionController(SubscriptionService subscriptionService) : C
         }
     }
     
+    /// <summary>
+    /// Updates a subscription for the given user based on the id.
+    /// </summary>
+    /// <param name="id"></param>
+    /// <param name="subscription"></param>
+    /// <returns></returns>
     [HttpPut("{id}")]
     public async Task<IActionResult> UpdateSubscription(int id, [FromBody] UpdateSubscriptionDto subscription)
     {
@@ -70,6 +90,12 @@ public class SubscriptionController(SubscriptionService subscriptionService) : C
         }
     }
     
+    /// <summary>
+    /// Updates a user's subscription based on the id.
+    /// </summary>
+    /// <param name="id"></param>
+    /// <param name="subscription"></param>
+    /// <returns></returns>
     [HttpPut("renew/{id}")]
     public async Task<IActionResult> RenewSubscription(int id, [FromBody] UpdateSubscriptionDto subscription)
     {
@@ -90,6 +116,11 @@ public class SubscriptionController(SubscriptionService subscriptionService) : C
         }
     }
     
+    /// <summary>
+    /// Deletes a subscription for the given user id.
+    /// </summary>
+    /// <param name="id"></param>
+    /// <returns></returns>
     [HttpDelete("subscription/{id}")]
     public async Task<IActionResult> DeleteSubscription(int id)
     {

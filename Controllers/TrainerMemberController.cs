@@ -13,8 +13,12 @@ namespace gym_management_api.Controllers;
 
 public class TrainersController(TrainerMemberService trainerMemberService) : ControllerBase
 {
+    /// <summary>
+    /// Returns all GetTrainersDto objects for the trainers table.
+    /// </summary>
+    /// <returns></returns>
     [HttpGet("trainers")]
-    public async Task<ActionResult<List<GetTrainersDto>>> CreateTGetAllTrainers()
+    public async Task<ActionResult<List<GetTrainersDto>>> GetAllTrainers()
     {
         if (!ModelState.IsValid)
             return BadRequest(ModelState);
@@ -35,6 +39,11 @@ public class TrainersController(TrainerMemberService trainerMemberService) : Con
         }
     }
     
+    /// <summary>
+    /// Returns a GetTrainersDto object for the trainer with the given id.
+    /// </summary>
+    /// <param name="id"></param>
+    /// <returns></returns>
     [HttpGet("{id}")]
     public async Task<ActionResult<List<GetTrainersDto>>> GetTrainerById(int id)
     {
@@ -57,6 +66,11 @@ public class TrainersController(TrainerMemberService trainerMemberService) : Con
         }
     }
     
+    /// <summary>
+    /// Creates a new Trainer entity with the given CreateTrainerDto object.
+    /// </summary>
+    /// <param name="dto"></param>
+    /// <returns></returns>
     [HttpPost("create")]
     public async Task<ActionResult> CreateTrainer([FromForm] CreateTrainerDto dto)
     {
@@ -79,6 +93,12 @@ public class TrainersController(TrainerMemberService trainerMemberService) : Con
         }
     }
     
+    /// <summary>
+    /// Updates a specific Trainer entity with the given UpdateTrainerDto object.
+    /// </summary>
+    /// <param name="id"></param>
+    /// <param name="dto"></param>
+    /// <returns></returns>
     [HttpPut("update")]
     public async Task<ActionResult> UpdateTrainer(int id, [FromForm] UpdateTrainerDto dto)
     {
@@ -101,6 +121,11 @@ public class TrainersController(TrainerMemberService trainerMemberService) : Con
         }
     }
     
+    /// <summary>
+    /// Soft-deletes a specific Trainer entity with the given id.
+    /// </summary>
+    /// <param name="id"></param>
+    /// <returns></returns>
     [HttpDelete("delete")]
     public async Task<ActionResult> DeleteTrainer(int id)
     {
@@ -123,6 +148,11 @@ public class TrainersController(TrainerMemberService trainerMemberService) : Con
         }
     }
     
+    /// <summary>
+    /// Returns all TrainerMemberDto objects for the trainer with the given id.
+    /// </summary>
+    /// <param name="trainerId"></param>
+    /// <returns></returns>
     [HttpGet("{trainerId}/members")]
     public async Task<ActionResult<List<TrainerMemberDto>>> GetTrainerMembers(int trainerId)
     {
@@ -130,6 +160,12 @@ public class TrainersController(TrainerMemberService trainerMemberService) : Con
         return Ok(members);
     }
     
+    /// <summary>
+    /// Assigns a member to a trainer.
+    /// </summary>
+    /// <param name="trainerId"></param>
+    /// <param name="dto"></param>
+    /// <returns></returns>
     [HttpPost("{trainerId}/members")]
     public async Task<ActionResult> AssignMemberToTrainer(int trainerId, [FromForm] AssignMemberToTrainerDto dto)
     {
@@ -155,6 +191,11 @@ public class TrainersController(TrainerMemberService trainerMemberService) : Con
         }
     }
     
+    /// <summary>
+    /// Returns all GetTrainerMemberDto objects for the member with the given id.
+    /// </summary>
+    /// <param name="memberId"></param>
+    /// <returns></returns>
     [HttpGet("{memberId}/trainer")]
     public async Task<ActionResult<TrainerMemberDto>> GetMemberTrainer(int memberId)
     {
@@ -165,6 +206,12 @@ public class TrainersController(TrainerMemberService trainerMemberService) : Con
         return Ok(trainer);
     }
     
+    /// <summary>
+    /// Removes a member from a trainer.
+    /// </summary>
+    /// <param name="trainerId"></param>
+    /// <param name="memberId"></param>
+    /// <returns></returns>
     [HttpDelete("{trainerId}/members/{memberId}")]
     public async Task<ActionResult> RemoveMemberFromTrainer(int trainerId, int memberId)
     {

@@ -277,3 +277,5 @@
 /Users/ivanmatejcic/Local projects/gym_management/gym_management_api/bin/Debug/net9.0/Microsoft.IdentityModel.Protocols.OpenIdConnect.dll
 /Users/ivanmatejcic/Local projects/gym_management/gym_management_api/bin/Debug/net9.0/Microsoft.IdentityModel.Tokens.dll
 /Users/ivanmatejcic/Local projects/gym_management/gym_management_api/bin/Debug/net9.0/System.IdentityModel.Tokens.Jwt.dll
+/Users/ivanmatejcic/Local projects/gym_management/gym_management_api/bin/Debug/net9.0/gym_management_api.xml
+/Users/ivanmatejcic/Local projects/gym_management/gym_management_api/obj/Debug/net9.0/gym_management_api.xml
